@@ -23,7 +23,6 @@ class ApiRequestController extends Controller
 
     public function __construct(Request $request)
     {
-        /*$this->helper = new RequestHelper();*/
         $this->view = 'main';
         parent::__construct($request);
     }
@@ -31,12 +30,15 @@ class ApiRequestController extends Controller
     public function create()
     {
         $countOfEntities = $this->request->getData()['count'];
-        $apiRequest = new RequestHelper(
+        $apiHelper = new RequestHelper(
             new LeadsMaker(),
             new CompaniesMaker(),
             new ContactsMaker(),
             $countOfEntities
         );
+        $test = $apiHelper->addComplex();
+        var_dump($test);
+
 
     }
 }

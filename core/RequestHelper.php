@@ -31,7 +31,7 @@ class RequestHelper implements ApiRequestInterface
 
     public function addComplex()
     {
-        $this->api->addComplex($this);
+       return $this->api->addComplex($this);
     }
 
     public function bindLists() : array
@@ -47,8 +47,8 @@ class RequestHelper implements ApiRequestInterface
     private function bindLeads(array $leadsData, array $companiesData, array $contactsData) : array
     {
         foreach($leadsData as &$lead){
-            $lead['_embedded']['companies'] = array_pop($companiesData);
-            $lead['_embedded']['contacts'] = array_pop($contactsData);
+            $lead['_embedded']['companies'][] = array_pop($companiesData);
+            $lead['_embedded']['contacts'][] = array_pop($contactsData);
         }
         return $leadsData;
     }
