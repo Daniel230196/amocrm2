@@ -27,29 +27,30 @@ class Request
     /*
      * Получить данные запроса
      * */
-    public function getData()
+    public function getData() : array
     {
         return $this->data;
     }
     /*
      * Получить запрашиваемый контроллер
      * */
-    public function getContr(): string
+    public function getContr()
     {
-        return $this->explodeUri()[0];
+        return $this->explodeUri()[1];
 
     }
     /*
      * Получить запрашиваемый метод
      * */
-    public function getMethod() : string
+    public function getMethod()
     {
-        return $this->explodeUri()[1];
+        $uri = $this->explodeUri()[2];
+        return explode('?',$uri)[0];
     }
     /*
      * Вспомогательная функция, разбивающая строку запроса
      * */
-    private function explodeUri() : array
+    private function explodeUri()
     {
        return  explode('/',$this->uri);
     }

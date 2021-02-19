@@ -17,14 +17,14 @@ class Controller
     /*
      * Путь к view-файлам
      * */
-    protected string $viewPath = '/view/';
+    protected string $viewPath = 'view/';
 
     public function __construct(Request $request)
     {
         $this->request = $request;
     }
 
-    protected function render()
+    public function render()
     {
         include $this->viewPath.$this->view.'.php';
     }

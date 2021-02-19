@@ -12,24 +12,38 @@ class Router
     /*
      * Дефолтный контроллер
      * */
-    private static string $defaultController;
+    private static string $defaultController = 'ApiRequestController';
+
     /*
      * Неймспейс контроллера
      * */
-    private static string $contrNamespace;
+    private static string $contrNamespace = '\\controllers\\';
+
     /*
      * Доступные маршруты по контроллерам
      * */
-    private static array $routes = [
-        ''
+    public static array $routes = [
+        'ApiRequestController' => ['create'],
     ];
+
     /*
      * Основной метод, определяет контроллер и его метод.
      * Вызывает дефолтный если запрос некорректен
      * */
     public static function start(Request $request)
     {
-        echo $request->getContr();
-        echo 'works';
+        $contr =  ucfirst($request->getContr());
+        $contr = $contr.'Controller';
+        $method = $request->getMethod();
+
+        if(file_exists('controllers/'.$contr.'.php') && in_array($method,self::$routes[$contr])){
+           $contr = self::$contrNamespace.$contr;
+           $oContr = new $contr($request);
+           $oContr->$method();
+        } else {
+            $contr = self::$contrNamespace.self::$defaultController;
+            $oContr = new $contr($request);
+            $oContr->render();
+        }
     }
 }

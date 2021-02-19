@@ -1,5 +1,8 @@
 <?php
-use \entities\Entity;
+
+namespace core;
+
+use \entities\EntityMaker;
 
 class ApiConnection
 {
@@ -8,21 +11,33 @@ class ApiConnection
     private $header = 'Authorization: Bearer ';
     private string $subdomain = 'https://dann70s';
     private $curl;
+    private static ApiConnection $connection;
 
-    public function __construct()
+    private function __construct(){}
+    private function __clone(){}
+    private function __wakeup(){}
+
+    public static function getInstance() : ApiConnection
     {
-
+        if (empty (self::$connection)){
+            return new self();
+        } else {
+            return self::$connection;
+        }
     }
-
     public function addComplex()
     {
 
     }
-    public function linkEntities(Entity $firstEntity, Entity $secondEntity)
+    public function linkEntities()
     {
 
     }
-    public function init(Entity $entity)
+
+    /*
+     * Метод для добавления пакета сущностей
+     * */
+    public function addEntity(EntityMaker $entity)
     {
 
         $link = $this->subdomain . $entity->getPath();
@@ -44,10 +59,24 @@ class ApiConnection
 
         return $out;
 
-
     }
+
+    public function addleadsComplex(\core\RequestHelper $requestHelper)
+    {
+        $this->curl = curl_init();
+        $this->configCurl();
+    }
+
     /*
-     * метод для общего конфигурирования Curl
+     * Метод для связывания сущностей
+     * */
+    public function bind()
+    {
+        $this->configCurl();
+    }
+
+    /*
+     * Метод для общего конфигурирования Curl
      *
      * */
     private function configCurl(): void

@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
@@ -7,6 +7,10 @@
     <title>Document</title>
 </head>
 <body>
-
+<form action="apiRequest/create">
+    <label for="count"> Select count of entities (1 - 10000)</label>
+    <input type="number" name="count">
+    <input type="submit">
+</form>
 </body>
 </html>

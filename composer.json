@@ -1,0 +1,19 @@
+{
+    "name": "dkhristolyubov/test2",
+    "authors": [
+        {
+            "name": "Daniel",
+            "email": "dkhristolyubov@team.amocrm.com"
+        }
+    ],
+    "require": {
+        "fzaninotto/faker": "^1.9"
+    },
+    "autoload": {
+        "psr-4": {
+            "controllers\\": "controllers",
+            "core\\": "core",
+            "entities\\": "entities"
+        }
+    }
+}
