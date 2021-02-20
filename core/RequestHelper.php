@@ -31,7 +31,7 @@ class RequestHelper implements ApiRequestInterface
 
     public function addComplex()
     {
-        $this->api->addComplex($this);
+        return $this->api->addComplex($this);
     }
 
     public function bindLists() : array

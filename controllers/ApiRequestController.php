@@ -37,6 +37,7 @@ class ApiRequestController extends Controller
             new ContactsMaker(),
             $countOfEntities
         );
+        var_dump($apiRequest->addComplex());
 
     }
 }

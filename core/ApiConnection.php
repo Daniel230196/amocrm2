@@ -25,10 +25,7 @@ class ApiConnection
             return self::$connection;
         }
     }
-    public function addComplex()
-    {
 
-    }
     public function linkEntities()
     {
 
@@ -61,10 +58,27 @@ class ApiConnection
 
     }
 
-    public function addleadsComplex(\core\RequestHelper $requestHelper)
+    public function addComplex(\core\RequestHelper $requestHelper)
     {
         $this->curl = curl_init();
-        $this->configCurl();
+
+        $data = $requestHelper->bindLists();
+        $link = $this->subdomain.'/api/v4/leads/complex';
+        var_dump($data);
+        $headers[] = $this->header . $this->accessToken;
+
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
+        curl_setopt($this->curl, CURLOPT_HEADER, false);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($this->curl, CURLOPT_URL, $link);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, json_encode($data));
+
+        $code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
+        return $out = curl_exec($this->curl);
     }
 
     /*
@@ -82,14 +96,7 @@ class ApiConnection
     private function configCurl(): void
     {
 
-        $headers[] = $this->header . $this->accessToken;
 
-        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($this->curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
-        curl_setopt($this->curl, CURLOPT_HEADER, false);
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 1);
-        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);
 
     }
 
