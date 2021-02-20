@@ -23,7 +23,7 @@ class Router
      * Доступные маршруты по контроллерам
      * */
     public static array $routes = [
-        'ApiRequestController' => ['create'],
+        'ApiRequestController' => ['create','text','note'],
     ];
 
     /*
@@ -40,6 +40,7 @@ class Router
            $contr = self::$contrNamespace.$contr;
            $oContr = new $contr($request);
            $oContr->$method();
+           echo "eeeee";
         } else {
             $contr = self::$contrNamespace.self::$defaultController;
             $oContr = new $contr($request);

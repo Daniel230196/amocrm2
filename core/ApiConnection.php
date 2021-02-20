@@ -2,8 +2,16 @@
 
 namespace core;
 
+use entities\BaseNote;
+use entities\CustomField;
 use \entities\EntityMaker;
+use entities\TextModel;
+use Faker\Provider\Base;
 
+
+/*
+ * Класс, выполняющий запросы к API
+ * */
 class ApiConnection
 {
     private string $accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImE2Njg0ODg3MTA0YjQ2MDk3MTYzYTM2MGMxNGVmNzg3ZTY3NGM2YmU1YmViZTJhMDhlNzZlMzYzMDEzNmU5MGJjMzhjM2ZlMzQ2M2RmYjVhIn0.eyJhdWQiOiJkMzA5MjkyNy1lY2Y4LTRlZjQtODdkOS00ODA1NTc3ZDVjNWQiLCJqdGkiOiJhNjY4NDg4NzEwNGI0NjA5NzE2M2EzNjBjMTRlZjc4N2U2NzRjNmJlNWJlYmUyYTA4ZTc2ZTM2MzAxMzZlOTBiYzM4YzNmZTM0NjNkZmI1YSIsImlhdCI6MTYxMzc2OTIzNiwibmJmIjoxNjEzNzY5MjM2LCJleHAiOjE2MTM4NTU2MzYsInN1YiI6IjY3NjEwMTQiLCJhY2NvdW50X2lkIjoyOTMwMjM3NSwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.Xrrh4Z1acORVLv36EyCcpXr-Te6IvSetpnnrMKrAvR-4gBaGpuqQaL6GmV6c_1u-uws4fH-I-xOzmzwt3bBW22FYXyAS7qT6kZtdMolOJAydiagPyw1Vx1TZpaSY4S1TmaBPlW9ZSxb2GcupyaOAENldWpO-0QonOXe3Z8aCBEjqp3rpgXX1YT2oVPRCTLdaUVwa6S5EL2WwtG29DZquda_CFV02cIqGhiqlYJd9cZndmxRFQrBjYkiimoFgCRzKsdfNx7pMzLq_mKZ2bGP9HENu5_cCvWINrMdEJjV-q8Toflpnureru9vvgUUgw1wh8Xxw8Q-IoGCpXLFzOV3Exg';
@@ -26,14 +34,15 @@ class ApiConnection
         }
     }
 
+    /*
+     * Пакетное добавление сделок с привязанными контактами и компаниями
+     * */
     public function addComplex(ApiRequestInterface $apiHelper)
     {
         $link = $this->subdomain . '.amocrm.ru/api/v4/leads/complex';
-        $headers[] = $this->header . $this->accessToken;
-        $headers[] = 'Content-Type: application/json';
+        $headers = $this->getHeaders();
 
-        $data = json_encode($apiHelper->bindLists());
-        var_dump($data);
+        $data = json_encode($apiHelper->getLeads());
         $this->curl = curl_init();
 
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
@@ -45,31 +54,24 @@ class ApiConnection
         curl_setopt($this->curl, CURLOPT_URL, $link);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
-        $out = curl_exec($this->curl);
+        $response = curl_exec($this->curl);
         curl_close($this->curl);
 
-        return $out;
-
-    }
-
-    public function linkEntities()
-    {
-
+        return $response;
     }
 
     /*
-     * Метод для добавления пакета сущностей
+     * метод для добавления покупателей
      * */
-    public function addEntity(EntityMaker $entity)
+    public function addCustomers(ApiRequestInterface $apiHelper)
     {
+        $link = $this->subdomain . '.amocrm.ru/api/v4/customers';
+        $headers[] = $this->header . $this->accessToken;
+        $headers[] = 'Content-Type: application/json';
 
-        $link = $this->subdomain . $entity->getPath();
-
-        $data = json_encode($entity->getData());
+        $data = json_encode($apiHelper->getCustomers());
 
         $this->curl = curl_init();
-
-        $headers[] = $this->header . $this->accessToken;
 
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
@@ -80,35 +82,23 @@ class ApiConnection
         curl_setopt($this->curl, CURLOPT_URL, $link);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
-        $out = curl_exec($this->curl);
-        $code = curl_getinfo($this->curl, CURLINFO_HTTP_CODE);
-
+        $response = curl_exec($this->curl);
         curl_close($this->curl);
 
-        return $out;
-
-    }
-
-    public function addLeadComplex(ApiRequestInterface $requestHelper)
-    {
-
+        return $response;
     }
 
     /*
      * Метод для связывания сущностей
      * */
-    public function bind()
+    public function bind(CustomerBinderInterface $binder)
     {
-        $this->configCurl();
-    }
+        $link = $this->subdomain . '.amocrm.ru/api/v4/companies/link';
+        $headers = $this->getHeaders();
 
-    /*
-     * Метод для общего конфигурирования Curl
-     *
-     * */
-    private function configCurl(): void
-    {
-        $headers[] = $this->header . $this->accessToken;
+        $data = json_encode($binder->getRequestData());
+
+        $this->curl = curl_init();
 
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
@@ -116,11 +106,108 @@ class ApiConnection
         curl_setopt($this->curl, CURLOPT_HEADER, false);
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 1);
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($this->curl, CURLOPT_URL, $link);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+        $response = curl_exec($this->curl);
+        curl_close($this->curl);
 
+        return $response;
     }
 
-    public function apiRequest(Entity $entity)
+    /*
+     * Метод заполняет редактирует сущность
+     *
+     * */
+    public function patch(CustomField $model)
     {
+        $link = $this->subdomain . '.amocrm.ru/api/v4/' . $model->type . '/' . $model->entityId;
+        $headers = $this->getHeaders();
 
+        $data = json_encode($model->getData());
+
+        $this->curl = curl_init();
+
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
+        curl_setopt($this->curl, CURLOPT_HEADER, false);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($this->curl, CURLOPT_URL, $link);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'PATCH');
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+        $response = curl_exec($this->curl);
+        curl_close($this->curl);
+
+        return $response;
     }
+
+    /*
+     * Метод добавляет примечание
+     * */
+    public function addNote(BaseNote $note)
+    {
+        $link = $this->subdomain . '.amocrm.ru/api/v4/' . $this->getType() . '/notes';
+        $headers = $this->getHeaders();
+
+        $data = json_encode($note->getData());
+
+        $this->curl = curl_init();
+
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($this->curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
+        curl_setopt($this->curl, CURLOPT_HEADER, false);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($this->curl, CURLOPT_URL, $link);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+        $response = curl_exec($this->curl);
+        curl_close($this->curl);
+
+        return $response;
+    }
+
+    public static function addCustomFieldText(string $entity)
+    {
+        $link ='https://dann70s.amocrm.ru/api/v4/' . $entity . '/custom_fields';
+
+        $headers[] = 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImE2Njg0ODg3MTA0YjQ2MDk3MTYzYTM2MGMxNGVmNzg3ZTY3NGM2YmU1YmViZTJhMDhlNzZlMzYzMDEzNmU5MGJjMzhjM2ZlMzQ2M2RmYjVhIn0.eyJhdWQiOiJkMzA5MjkyNy1lY2Y4LTRlZjQtODdkOS00ODA1NTc3ZDVjNWQiLCJqdGkiOiJhNjY4NDg4NzEwNGI0NjA5NzE2M2EzNjBjMTRlZjc4N2U2NzRjNmJlNWJlYmUyYTA4ZTc2ZTM2MzAxMzZlOTBiYzM4YzNmZTM0NjNkZmI1YSIsImlhdCI6MTYxMzc2OTIzNiwibmJmIjoxNjEzNzY5MjM2LCJleHAiOjE2MTM4NTU2MzYsInN1YiI6IjY3NjEwMTQiLCJhY2NvdW50X2lkIjoyOTMwMjM3NSwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.Xrrh4Z1acORVLv36EyCcpXr-Te6IvSetpnnrMKrAvR-4gBaGpuqQaL6GmV6c_1u-uws4fH-I-xOzmzwt3bBW22FYXyAS7qT6kZtdMolOJAydiagPyw1Vx1TZpaSY4S1TmaBPlW9ZSxb2GcupyaOAENldWpO-0QonOXe3Z8aCBEjqp3rpgXX1YT2oVPRCTLdaUVwa6S5EL2WwtG29DZquda_CFV02cIqGhiqlYJd9cZndmxRFQrBjYkiimoFgCRzKsdfNx7pMzLq_mKZ2bGP9HENu5_cCvWINrMdEJjV-q8Toflpnureru9vvgUUgw1wh8Xxw8Q-IoGCpXLFzOV3Exg';
+        $headers[] = 'Content-Type: application/json';
+        //$data = json_encode($binder->getRequestData());
+
+        $data = [[
+                "name" => "text",
+                "type" => "text",
+            ]];
+
+        $curl = curl_init();
+
+        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($curl, CURLOPT_URL, $link);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
+        $response = curl_exec($curl);
+        curl_close($curl);
+
+        return $response;
+    }
+    /*
+     * метод получения необходимых для запроса заголовков
+     * */
+    private function getHeaders() : array
+    {
+        $headers[] = $this->header.$this->accessToken;
+        $headers[] = 'Content-Type: application/json';
+        return $headers;
+    }
+
+
 }

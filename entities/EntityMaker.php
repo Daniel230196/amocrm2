@@ -10,14 +10,9 @@ use core;
 abstract class EntityMaker
 {
     /*
-     * Список всех сущностей одного типа
+     * Список всех сущностей
      * */
     protected array $data;
-
-    /*
-     * Метод для соединения с АПИ
-     * */
-    protected string $path;
 
     /*
      * Коннект с АПИ
@@ -29,7 +24,6 @@ abstract class EntityMaker
      * */
     public function __construct()
     {
-        $this->connection = core\ApiConnection::getInstance();
     }
 
     /*
@@ -38,14 +32,6 @@ abstract class EntityMaker
     public function getData(): array
     {
         return $this->data;
-    }
-
-    /*
-     * Получить метод для АПИ
-     * */
-    public function getPath() : string
-    {
-        return $this->path;
     }
 
     /*
@@ -61,11 +47,6 @@ abstract class EntityMaker
 
         return $this->data;
     }
-
-    /*
-     * Метод , реализующий комплексное добавление списка сущностей
-     * */
-    abstract public function addComplex();
 
     /*
      * Метод, возвращающий экземпляр сущности

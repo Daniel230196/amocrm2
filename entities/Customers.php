@@ -14,11 +14,13 @@ class Customers extends Entity
         parent::__construct();
         $this->seed();
     }
-    public function seed() : void
+
+    public function seed(): void
     {
         $this->data = [
             'name' => $this->faker->name,
-            'next_price' => $this->faker->numberBetween(1,60000)
+            'next_price' => $this->faker->numberBetween(1, 60000)
         ];
     }
+
 }

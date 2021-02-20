@@ -7,6 +7,6 @@ namespace core;
 interface ApiRequestInterface
 {
     public function addComplex();
-    public function bindLists();
-    public function getById();
+    public function getBoundedList() : array;
+    public function bindCustomers(array $response);
 }
