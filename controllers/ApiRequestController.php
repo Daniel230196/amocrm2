@@ -10,6 +10,7 @@ use entities\CompaniesMaker;
 use entities\ContactsMaker;
 use entities\CustomerMaker;
 use entities\LeadsMaker;
+use entities\Task;
 use entities\TextField;
 use entities\CommonNote;
 use entities\IncallNote;
@@ -57,12 +58,11 @@ class ApiRequestController extends Controller
     {
         $data = $this->request->getData();
 
-        if ($data['type'] === 'common' ){
+        if ($data['noteType'] === 'common' ){
             $note = new CommonNote($data);
         } else {
             $note = new IncallNote($data);
         }
-
         $res = $note->addNote();
         var_dump($res);
     }
@@ -73,11 +73,32 @@ class ApiRequestController extends Controller
     public function text()
     {
         $data = $this->request->getData();
-        $data['data'] = $data['text'];
+        var_dump($data);
         $textField = new TextField($data);
-
         $result = $textField->patch();
         var_dump($result);
 
+    }
+
+    /*
+     * Метод добавляет новую задачу
+     * */
+    public function task()
+    {
+        $data = $this->request->getData();
+        $task = new Task($data);
+        $res = $task->add();
+        var_dump($res);
+    }
+
+    /*
+     * Метод, завершающий задачу
+     * */
+    public function taskComplete()
+    {
+        $data = $this->request->getData();
+        $task = new Task($data);
+        $res = $task->patch();
+        var_dump($res);
     }
 }

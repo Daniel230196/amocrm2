@@ -125,15 +125,6 @@ class RequestHelper implements ApiRequestInterface
     }
 
     /*
-     * Метод, разбивающий данные запроса по 50 сущностей
-     *
-     * */
-    private function chunkData()
-    {
-
-    }
-
-    /*
      * Метод, который производит 3 главных запроса к АПИ
      * */
     private function apiRequests()

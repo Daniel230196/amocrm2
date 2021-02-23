@@ -15,17 +15,17 @@
 </form>
 <form action="apiRequest/text">
     <h3>Add a text</h3>
-    <label for="data">Text</label>
-    <textarea name="data"  cols="30" rows="5"></textarea>
-    <label for="type">Choose a type of entity:</label>
-    <select name="type">
-        <option value="leads">lead</option>
-        <option value="companies">company</option>
-        <option value="contacts">contact</option>
-        <option value="customer">customer</option>
-    </select>
     <label for="id">EntityID</label>
     <input type="number" name="id">
+    <label for="type">Entity type</label>
+    <select name="type">
+        <option value="leads">leads</option>
+        <option value="companies">companies</option>
+        <option value="contacts">contacts</option>
+        <option value="customers">customers</option>
+    </select>
+    <label for="data">Text</label>
+    <textarea name="data"  cols="30" rows="1"></textarea>
     <input type="submit">
 </form>
 <form action="apiRequest/note">
@@ -37,12 +37,40 @@
         <option value="call_in">incoming call</option>
         <option value="common">Text note</option>
     </select>
+    <label for="entityType">Entity type</label>
     <select name="entityType">
         <option value="companies">Company</option>
         <option value="leads">Lead</option>
         <option value="customers">Customer</option>
         <option value="contacts">Contact</option>
     </select>
+    <input type="submit">
+</form>
+<form action="apiRequest/task">
+    <h3>Add a task</h3>
+    <label for="entity">Entity ID</label>
+    <input type="number" name="entity">
+    <label for="type">Entity type</label>
+    <select name="type">
+        <option value="companies">Company</option>
+        <option value="leads">Lead</option>
+        <option value="customers">Customer</option>
+        <option value="contacts">Contact</option>
+    </select>
+    <label for="text">Task text</label>
+    <textarea name="text"  cols="30" rows="1"></textarea>
+    <label for="time">Complete Till</label>
+    <input type="date" name="time">
+    <label for="user">Responsible user ID</label>
+    <input type="number" name="user">
+    <input type="submit">
+</form>
+<form action="apiRequest/taskComplete">
+    <h3>Complete task by ID</h3>
+    <label for="id">Task id</label>
+    <input type="number" name="id">
+    <label for="result">Result</label>
+    <input type="text" name="result">
     <input type="submit">
 </form>
 <script>

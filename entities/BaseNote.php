@@ -3,12 +3,11 @@
 
 namespace entities;
 
+use core\ApiConnection;
+
 /*
  * Базовый класс для создания примечаний
  * */
-
-use core\ApiConnection;
-
 class BaseNote
 {
     /*
@@ -34,11 +33,11 @@ class BaseNote
     public function __construct(array $data)
     {
         $this->data = [[
-            'entity_id' => $data['id'],
+            'entity_id' => intval($data['id']),
             'note_type' => $data['noteType'],
             'params' => []
         ]];
-        $this->entityId = $data['id'];
+        $this->entityId = intval($data['id']);
         $this->entityType = $data['entityType'];
         $this->api = ApiConnection::getInstance();
     }
