@@ -4,14 +4,17 @@
     <meta name="viewport"
           content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../resources/style.css">
     <title>Document</title>
 </head>
 <body>
-<form action="apiRequest/create">
+<form action="apiRequest/create" name="add">
     <h3>Add Entities</h3>
     <label for="count"> Select count of entities (1 - 10000)</label>
     <input type="number" name="count">
-    <input type="submit">
+    <input type="submit" id="count">
+    <div id="alert" class="none">
+    </div>
 </form>
 <form action="apiRequest/text">
     <h3>Add a text</h3>
@@ -73,8 +76,7 @@
     <input type="text" name="result">
     <input type="submit">
 </form>
-<script>
-
-</script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="../resources/script.js"></script>
 </body>
 </html>

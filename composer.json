@@ -15,7 +15,8 @@
         "psr-4": {
             "controllers\\": "controllers",
             "core\\": "core",
-            "entities\\": "entities"
+            "entities\\": "entities",
+            "exceptions\\": "exceptions"
         }
     }
 }

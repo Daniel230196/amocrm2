@@ -13,8 +13,8 @@ use entities\Task;
  * */
 class ApiConnection
 {
-    private string $accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6Ijg0MjhlZWMwZjkxZjM1NDFmNjVjZTJiOGMwMDA2OTg1MTIzZWE3ZDQyOTE0MTYwMzBmYWFhOGJjMTU0MjRlYjdlZDQxOGE0OWJiOWJiZWIzIn0.eyJhdWQiOiI3YTExODRlMy0yZjA1LTQ3NjQtYTBlNy04MzIyNjNmZGYwZjUiLCJqdGkiOiI4NDI4ZWVjMGY5MWYzNTQxZjY1Y2UyYjhjMDAwNjk4NTEyM2VhN2Q0MjkxNDE2MDMwZmFhYThiYzE1NDI0ZWI3ZWQ0MThhNDliYjliYmViMyIsImlhdCI6MTYxNDEwOTA2MywibmJmIjoxNjE0MTA5MDYzLCJleHAiOjE2MTQxOTU0NjMsInN1YiI6IjY3NjEwMTQiLCJhY2NvdW50X2lkIjoyOTMwMjM3NSwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.bVSG1T6LmX6IcoTjjba1RtuLDmc2BoOUn0zWJy3sjSZ8_tcwBW0MTClqK42vhCSCFMIBOXFUK-RRrPTxbVks-1WVne8jccxCnC8rjiaSVAhWCV6q6VJGg6th3_UH1QRN0ff5M5AxwQqM0cx-sLImye4tLga6Zw5XpeNt5txGkqdDAyAHFqPz-DyioMOVSMngw-0ZooiWWiFhVFhrKxSRN25wEsVOeRiVWo5FMIoU_gDVmEQ41wbWZ6uoMOuLDMv_2tHvaQJ7kFfe4OZZv5_KxoL6XdYJl037hSNkZBaXjELBhrIn_4LosFZrjpG_gTKLkv-8vL-SU3iOAZi_YpczIg';
-    private string $refreshToken = 'def50200896542dfa50114304c2cf603636509b2c5244eea8f99d22fe7bd1c390a7bcbb06e74617ee4390d96e6680449928cd685ffa6094166a53e4ca8b9d20a8619409faf4b3494e0f80a05d1cb9e94b0d4d33984f222a03fe377c1772d422fbf56d6536d635d6636169cedfe35ae38459b32e4d7cc9203907f52c82da62bf87ab9f4f7a938266855ccd9f9148e20536a18ed94a4cc23fe1b4b4ce02d866d2e2b81c7c4a88dd603c498a7f6701f126189afe68c6900949841e5c63ba9708b5ed17a750d0cbb5559d30269ebb8828c9f9d216db5c05b5730e78092495ee980fb3ef128349f3522986d451c4e75437c7456f51e88ac3e20e429c234fccfe0b68e3724a8ebec24cd8ce9b193d9cf7956e818cbbdda90106044704f3cc155b5d73b09e92ac97a6e995f103d7854b579b82b690f297cdf819498568683a629de6f278e208e58be04749b9396ac6eb3707fcdc211a5aea3900d542bad45eafebfcf95574d5dbb03a801fe2e41ffcba4093dac73b7569832424bd87f4ee44d869b9320aadb16e5642e5533b08e7213f5b3cbdc6caaf08eb51944607ab003c87406b66ce3d6a12969ed7303dbb0f05b72f8cb7d3ae30a029b8c88854b656fa5cc3be375878662c41f1ddcbaad59';
+    private string $accessToken = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjUwNDI3YWI3MTMwMzI0MzFlOGVlZjEwM2M5NjljODRmMzEyYTFkZWY5ZTA3ODkyNGEwYWNmOTUwZDEzZTQ4MmQ4NDcwNTAzYjdjM2I0MWUyIn0.eyJhdWQiOiI2YTI0Y2YwZS02OGRjLTQ4ZWEtYjVjNS0zNDNmOTgxOGEwZDkiLCJqdGkiOiI1MDQyN2FiNzEzMDMyNDMxZThlZWYxMDNjOTY5Yzg0ZjMxMmExZGVmOWUwNzg5MjRhMGFjZjk1MGQxM2U0ODJkODQ3MDUwM2I3YzNiNDFlMiIsImlhdCI6MTYxNDE2NTg4NywibmJmIjoxNjE0MTY1ODg3LCJleHAiOjE2MTQyNTIyODcsInN1YiI6IjY3NjEwMTQiLCJhY2NvdW50X2lkIjoyOTMwMjM3NSwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.HXftgi_XUU7iEhLf1oN8-ypJ1ibFBEL-_Rl_bXhEZguulVaU7hPXfrDs_iuXrllCGN5H22NwqRCElKTiPiwvBwbazE71ATbwNEIBDlah17ppaMamYXXZCXvchn8kuYQ3Mf-Z2SFDFSrEgnAJNfD-Bq-tqHemGyQ17181YIxSH-bhQmZukqYOE6-pmXC9ZDmxeF4Epul6KoHaXyrR7hRj1JQGbAjT3F1LzCvwww3Fg33XdSAYS_-kYaMLHqG0IkWJyVPx_H6K6xuKfQEGo1h9fVFbJqOavOHi-NHPA4dBW4-mCaoYaDj5Fp5fsJcmO6AIeI93kTtOxulmOhAG22gtvw';
+    private string $refreshToken = 'def502008c4ab2a46eee4331ed04e35be9a566abb513c74937a8c23f01c11b6f5538789ae45e1f2d82aecccb872c308aad88f9ca86b12da64414cae880a64b36106f85a3072907dca15c46081494f24da2d621e003abaf78127e6cdea55e39f7049ead79d277b0834a3ccf8b8f4d332fb06a1bef3f16567adba98a469a182711ba26ecfb81e4f5f162bce78a3e80740fff9016675ca78477596dcf4a2e23e16e78c0c56c85fdd0cb526f6af7233efc18f3dd5cb984f75a690b9bef2b36c2dbabac008599f9f55c0bd3cdab36a723c6753c36baa484bb8d63b836a31f3694abd74520dfe31d21617e4b688f02ac4c006ae4305c71306e1656d5a52c0fc08f2d32942d0ae6518874077326ce8779dd737100782a780313934805cc6b75bba3e910a5a503175fc20e37c2209c1a4ba3c361ebd942104a468e0ad39d0a82a9f977021272456c7d9eebeaecdb40409ac89a42572b5fda117149d8ce84d4a60d005e32cb075fa9fb329ba0294e4f1a38af4e632ad9546516299242f502af33baaebf278dd4c159a5ff8221e8db08af1636d9d456215d3c4df10754c079762a57aa5942f7091d304f5fbb0df8dd2b23099d21b93f3ac6ab4b3536bf063df9836c66898e1e7cc0fbdff28e5e9167';
     private string $header = 'Authorization: Bearer ';
     private string $subdomain = 'https://dann70s.amocrm.ru/';
     private $curl;
@@ -36,13 +36,13 @@ class ApiConnection
 
     /*
      * Метод, производящий curl-запросы
+     *
      * */
     private function curlRequest(array $data, string $method, string $uri)
     {
         $link = $this->subdomain.$uri;
         $headers = $this->getHeaders();
         $data = json_encode($data);
-
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
@@ -53,6 +53,8 @@ class ApiConnection
         curl_setopt($this->curl, CURLOPT_URL, $link);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+
+        $code = curl_getinfo($this->curl,CURLINFO_RESPONSE_CODE);
         $response = curl_exec($this->curl);
         curl_close($this->curl);
 
@@ -70,6 +72,9 @@ class ApiConnection
         $method = 'POST';
 
         return $this->curlRequest($data, $method, $uri);
+
+
+
     }
 
     /*
