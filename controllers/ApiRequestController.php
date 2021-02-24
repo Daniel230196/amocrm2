@@ -39,16 +39,23 @@ class ApiRequestController extends Controller
     public function create()
     {
         $countOfEntities = $this->request->getData()['count'];
-        $apiHelper = new RequestHelper(
-            new LeadsMaker(),
-            new CompaniesMaker(),
-            new ContactsMaker(),
-            new CustomerMaker(),
-            new CustomerBinder(),
-            $countOfEntities
-        );
 
-        $apiHelper->addComplex();
+        if($countOfEntities > 10000 || $countOfEntities < 0) {
+            $response['message'] = "invalid count of entities";
+            echo json_encode($response);
+        }else{
+            $apiHelper = new RequestHelper(
+                new LeadsMaker(),
+                new CompaniesMaker(),
+                new ContactsMaker(),
+                new CustomerMaker(),
+                new CustomerBinder(),
+                $countOfEntities
+            );
+
+            $apiHelper->addComplex();
+        }
+
     }
 
     /*
