@@ -16,7 +16,6 @@
             "controllers\\": "controllers",
             "core\\": "core",
             "entities\\": "entities",
-            "exceptions\\": "exceptions"
         }
     }
 }

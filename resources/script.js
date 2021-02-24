@@ -1,4 +1,3 @@
-
 $('#count').click( (e) => {
     e.preventDefault();
     let count = $('input[name="count"]').val()
@@ -17,11 +16,11 @@ $('#count').click( (e) => {
             success: function (data){
                 alert.removeClass('none')
                 alert.addClass('success')
-                alert.text('Success')
+                alert.text(data);
             },
             error: function (jqXHR){
                 message = ''
-                if(jqXHR.status == 401){
+                if(jqXHR.status === 401){
                     message = 'Token has been expired'
                 }else if(jqXHR.status < 200 || jqXHR.status > 204){
                     message = 'Invalid input data'
@@ -34,3 +33,4 @@ $('#count').click( (e) => {
 
     }
 })
+

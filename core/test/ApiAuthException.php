@@ -1,7 +1,7 @@
 <?php
 
 
-namespace exceptions;
+namespace core\test;
 
 
 use Throwable;

@@ -1,6 +1,6 @@
 <?php
 
-namespace exceptions;
+namespace core\test;
 
 class ApiConnectionException extends \Exception
 {
