@@ -23,7 +23,7 @@ class Router
      * Доступные маршруты по контроллерам
      * */
     public static array $routes = [
-        'ApiRequestController' => ['create','text','note','task','taskComplete'],
+        'ApiRequestController' => ['create','text','note','task','taskComplete','test'],
     ];
 
     /*

@@ -1,0 +1,17 @@
+#alert {
+
+}
+.error{
+    color: crimson;
+    border: yellow solid;
+    background-color: coral;
+}
+
+.none{
+    transition: all, 0.5s;
+    display: none;
+}
+.success{
+    background-color: deepskyblue;
+    color: black;
+}

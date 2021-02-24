@@ -80,7 +80,6 @@ class ApiRequestController extends Controller
     public function text()
     {
         $data = $this->request->getData();
-        var_dump($data);
         $textField = new TextField($data);
         $result = $textField->patch();
         var_dump($result);
@@ -107,5 +106,11 @@ class ApiRequestController extends Controller
         $task = new Task($data);
         $res = $task->patch();
         var_dump($res);
+    }
+
+    public function test()
+    {
+        $data = $this->request->getData();
+        var_dump($data);
     }
 }

@@ -6,9 +6,6 @@ namespace entities;
 /*
  * Модель доп. поля текст
  * */
-
-use core\ApiConnection;
-
 class TextField extends CustomField
 {
 
