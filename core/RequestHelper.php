@@ -3,6 +3,7 @@
 
 namespace core;
 
+use core\test\ApiConnectionException;
 use entities\CompaniesMaker;
 use entities\ContactsMaker;
 use entities\CustomerMaker;
@@ -125,13 +126,21 @@ class RequestHelper implements ApiRequestInterface
     }
 
     /*
-     * Метод, который производит 3 главных запроса к АПИ
+     * Метод, который производит 3 основных запроса к АПИ
      * */
     private function apiRequests()
     {
-        $responseLeads = $this->api->addComplex($this);
-        $responseCustomers = $this->api->addCustomers($this);
-        $response = array_merge(json_decode($responseLeads, true), json_decode($responseCustomers, true));
-        $this->bindCustomers($response);
+        try{
+            $responseLeads = $this->api->addComplex($this);
+            if($responseLeads === false){
+                throw new ApiConnectionException('0', );
+            }
+            $responseCustomers = $this->api->addCustomers($this);
+            $response = array_merge(json_decode($responseLeads, true), json_decode($responseCustomers, true));
+            $this->bindCustomers($response);
+        }catch(ApiConnectionException $e){
+            echo $e->getMessage().$e->getCode();
+            exit;
+        }
     }
 }

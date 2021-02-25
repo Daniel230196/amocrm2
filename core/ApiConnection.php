@@ -14,40 +14,32 @@ class ApiConnection
 {
     use SingletonTrait;
 
-    private string $clientId;
-    private string $clientSecret;
-    private string $redirectUri;
-    private string $accessToken;
-    private string $refreshToken;
-    private string $subdomain;
+    private static string $clientId;
+    private static string $clientSecret;
+    private static string $redirectUri;
+    private static string $accessToken;
+    private static string $refreshToken;
+    private static string $subdomain;
     private string $header = 'Authorization: Bearer ';
     private $curl;
+    private static int $count = 1;
 
     private function __construct()
     {
-       $this->setConf();
     }
 
     /*
      * Метод, инициализирующий необходимые для соединения данные
      * */
-    private function setConf()
+    private static function init()
     {
         $conf = Config::getInstance()->get('api', ['access_token','refresh_token','redirect_uri','client_id','client_secret', 'domain']);
-        $this->refreshToken = $conf['refresh_token'];
-        $this->accessToken = $conf['access_token'];
-        $this->redirectUri = $conf['redirect_uri'];
-        $this->subdomain = $conf['domain'];
-        $this->clientSecret = $conf['client_secret'];
-        $this->clientId = $conf['client_id'];
-        var_dump($this);
-    }
-    private function __clone()
-    {
-    }
-
-    private function __wakeup()
-    {
+        self::$refreshToken = $conf['refresh_token'];
+        self::$accessToken = $conf['access_token'];
+        self::$redirectUri = $conf['redirect_uri'];
+        self::$subdomain = $conf['domain'];
+        self::$clientSecret = $conf['client_secret'];
+        self::$clientId = $conf['client_id'];
     }
 
     /*
@@ -56,14 +48,14 @@ class ApiConnection
     private function refreshToken()
     {
         $params = [
-            "client_id" => $this->clientId,
-            "client_secret" => $this->clientSecret,
+            "client_id" => self::$clientId,
+            "client_secret" => self::$clientSecret,
             "grant_type" => "refresh_token",
-            "refresh_token" => $this->refreshToken,
-            "redirect_uri" => $this->redirectUri
+            "refresh_token" => self::$refreshToken,
+            "redirect_uri" => self::$redirectUri
         ];
 
-        $link = $this->subdomain.'oauth2/access_token';
+        $link = self::$subdomain.'oauth2/access_token';
 
         $curl = curl_init();
         curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
@@ -82,8 +74,9 @@ class ApiConnection
 
         Config::getInstance()->set('api',$out);
 
-        $this->setConf();
+        self::init();
 
+        return $out;
 
     }
 
@@ -93,7 +86,7 @@ class ApiConnection
      * */
     private function curlRequest(array $data, string $method, string $uri)
     {
-        $link = $this->subdomain . $uri;
+        $link = self::$subdomain . $uri;
         $headers = $this->getHeaders();
         $data = json_encode($data);
         $this->curl = curl_init();
@@ -106,15 +99,14 @@ class ApiConnection
         curl_setopt($this->curl, CURLOPT_URL, $link);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $method);
         curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
-        $code = curl_getinfo($this->curl, CURLINFO_RESPONSE_CODE);
         $response = curl_exec($this->curl);
         curl_close($this->curl);
         $test = json_decode($response,true);
 
-        if($test['status'] === 401){
-            var_dump($test['status']);
+        if(isset($test['status']) && $test['status'] === 401){
             $this->refreshToken();
-            return $this->curlRequest(json_decode($data,true),$method,$uri);
+            ++static::$count;
+            return static::$count > 1 ? false : $this->curlRequest(json_decode($data,true),$method,$uri);
         }else{
             return $response;
         }
@@ -235,7 +227,7 @@ class ApiConnection
      * */
     private function getHeaders() : array
     {
-        $headers[] = $this->header.$this->accessToken;
+        $headers[] = $this->header.self::$accessToken;
         $headers[] = 'Content-Type: application/json';
         return $headers;
     }
