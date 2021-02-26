@@ -25,7 +25,7 @@ class ApiConnection
 
     private function __construct()
     {
-       $this->setConf();
+        $this->setConf();
     }
 
     /*
@@ -33,7 +33,7 @@ class ApiConnection
      * */
     private function setConf()
     {
-        $conf = Config::getInstance()->get('api', ['access_token','refresh_token','redirect_uri','client_id','client_secret', 'domain']);
+        $conf = Config::getInstance()->get('api', ['access_token', 'refresh_token', 'redirect_uri', 'client_id', 'client_secret', 'domain']);
         $this->refreshToken = $conf['refresh_token'];
         $this->accessToken = $conf['access_token'];
         $this->redirectUri = $conf['redirect_uri'];
@@ -42,6 +42,7 @@ class ApiConnection
         $this->clientId = $conf['client_id'];
         var_dump($this);
     }
+
     private function __clone()
     {
     }
@@ -63,24 +64,24 @@ class ApiConnection
             "redirect_uri" => $this->redirectUri
         ];
 
-        $link = $this->subdomain.'oauth2/access_token';
+        $link = $this->subdomain . 'oauth2/access_token';
 
         $curl = curl_init();
-        curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl,CURLOPT_USERAGENT,'amoCRM-oAuth-client/1.0');
-        curl_setopt($curl,CURLOPT_URL, $link);
-        curl_setopt($curl,CURLOPT_HTTPHEADER,['Content-Type:application/json']);
-        curl_setopt($curl,CURLOPT_HEADER, false);
-        curl_setopt($curl,CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($curl,CURLOPT_POSTFIELDS, json_encode($params));
-        curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, 1);
-        curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, 2);
+        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
+        curl_setopt($curl, CURLOPT_URL, $link);
+        curl_setopt($curl, CURLOPT_HTTPHEADER, ['Content-Type:application/json']);
+        curl_setopt($curl, CURLOPT_HEADER, false);
+        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($params));
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
         $out = curl_exec($curl);
         $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         curl_close($curl);
         $out = json_decode($out, true);
 
-        Config::getInstance()->set('api',$out);
+        Config::getInstance()->set('api', $out);
 
         $this->setConf();
 
@@ -109,13 +110,12 @@ class ApiConnection
         $code = curl_getinfo($this->curl, CURLINFO_RESPONSE_CODE);
         $response = curl_exec($this->curl);
         curl_close($this->curl);
-        $test = json_decode($response,true);
+        $test = json_decode($response, true);
 
-        if($test['status'] === 401){
-            var_dump($test['status']);
+        if ($test['status'] && $test['status'] === 401) {
             $this->refreshToken();
-            return $this->curlRequest(json_decode($data,true),$method,$uri);
-        }else{
+            return $this->curlRequest(json_decode($data, true), $method, $uri);
+        } else {
             return $response;
         }
 
@@ -134,7 +134,6 @@ class ApiConnection
         return $this->curlRequest($data, $method, $uri);
 
 
-
     }
 
     /*
@@ -146,7 +145,7 @@ class ApiConnection
         $method = 'POST';
         $data = $apiHelper->getCustomers();
 
-        return $this->curlRequest($data,$method,$uri);
+        return $this->curlRequest($data, $method, $uri);
     }
 
     /*
@@ -158,7 +157,7 @@ class ApiConnection
         $method = 'POST';
         $data = $binder->getRequestData();
 
-        return $this->curlRequest($data,$method,$uri);
+        return $this->curlRequest($data, $method, $uri);
     }
 
     /*
@@ -171,7 +170,7 @@ class ApiConnection
         $method = 'PATCH';
         $data = $model->getData();
 
-        return $this->curlRequest($data, $method,$uri);
+        return $this->curlRequest($data, $method, $uri);
     }
 
     /*
@@ -197,21 +196,21 @@ class ApiConnection
         $method = 'POST';
         $data = $task->getAddData();
 
-        return $this->curlRequest($data,$method,$uri);
+        return $this->curlRequest($data, $method, $uri);
     }
 
     public static function addCustomFieldText(string $entity)
     {
-        $link ='https://dann70s.amocrm.ru/api/v4/' . $entity . '/custom_fields';
+        $link = 'https://dann70s.amocrm.ru/api/v4/' . $entity . '/custom_fields';
 
         $headers[] = 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImE2Njg0ODg3MTA0YjQ2MDk3MTYzYTM2MGMxNGVmNzg3ZTY3NGM2YmU1YmViZTJhMDhlNzZlMzYzMDEzNmU5MGJjMzhjM2ZlMzQ2M2RmYjVhIn0.eyJhdWQiOiJkMzA5MjkyNy1lY2Y4LTRlZjQtODdkOS00ODA1NTc3ZDVjNWQiLCJqdGkiOiJhNjY4NDg4NzEwNGI0NjA5NzE2M2EzNjBjMTRlZjc4N2U2NzRjNmJlNWJlYmUyYTA4ZTc2ZTM2MzAxMzZlOTBiYzM4YzNmZTM0NjNkZmI1YSIsImlhdCI6MTYxMzc2OTIzNiwibmJmIjoxNjEzNzY5MjM2LCJleHAiOjE2MTM4NTU2MzYsInN1YiI6IjY3NjEwMTQiLCJhY2NvdW50X2lkIjoyOTMwMjM3NSwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.Xrrh4Z1acORVLv36EyCcpXr-Te6IvSetpnnrMKrAvR-4gBaGpuqQaL6GmV6c_1u-uws4fH-I-xOzmzwt3bBW22FYXyAS7qT6kZtdMolOJAydiagPyw1Vx1TZpaSY4S1TmaBPlW9ZSxb2GcupyaOAENldWpO-0QonOXe3Z8aCBEjqp3rpgXX1YT2oVPRCTLdaUVwa6S5EL2WwtG29DZquda_CFV02cIqGhiqlYJd9cZndmxRFQrBjYkiimoFgCRzKsdfNx7pMzLq_mKZ2bGP9HENu5_cCvWINrMdEJjV-q8Toflpnureru9vvgUUgw1wh8Xxw8Q-IoGCpXLFzOV3Exg';
         $headers[] = 'Content-Type: application/json';
         //$data = json_encode($binder->getRequestData());
 
         $data = [[
-                "name" => "text",
-                "type" => "text",
-            ]];
+            "name" => "text",
+            "type" => "text",
+        ]];
 
         $curl = curl_init();
 
@@ -227,6 +226,23 @@ class ApiConnection
         $response = curl_exec($curl);
         curl_close($curl);
 
+        return $response;
+    }
+
+    public function leads()
+    {
+        $uri = 'api/v4/leads';
+        $method = 'GET';
+        $headers = $this->getHeaders();
+
+        $this->curl = curl_init();
+        curl_setopt($this->curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
+        curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($this->curl, CURLOPT_URL, $this->subdomain.$uri);
+        curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $method);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYPEER, 1);
+        curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);
+        $response = curl_exec($this->curl);
         return $response;
     }
 

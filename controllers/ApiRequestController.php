@@ -3,6 +3,8 @@
 
 namespace controllers;
 
+use core\ApiConnection;
+use core\Config;
 use core\CustomerBinder;
 use core\Request;
 use core\RequestHelper;
@@ -42,7 +44,7 @@ class ApiRequestController extends Controller
 
         if($countOfEntities > 10000 || $countOfEntities < 0) {
             $response['message'] = "invalid count of entities";
-            echo json_encode($response);
+            //echo json_encode($response);
         }else{
             $apiHelper = new RequestHelper(
                 new LeadsMaker(),
@@ -92,6 +94,7 @@ class ApiRequestController extends Controller
     public function task()
     {
         $data = $this->request->getData();
+        var_dump($data);
         $task = new Task($data);
         $res = $task->add();
         var_dump($res);

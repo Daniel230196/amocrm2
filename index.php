@@ -11,7 +11,6 @@ $request = new c\Request();
 c\Router::start($request);
 
 
-
 /*
 $subdomain = 'dann70s';
 $link = 'https://' . $subdomain . '.amocrm.ru/oauth2/access_token';
