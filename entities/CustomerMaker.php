@@ -7,7 +7,7 @@ namespace entities;
 class CustomerMaker extends EntityMaker
 {
 
-    protected function makeEntity(): Entity
+    public function makeEntity(): Entity
     {
         return new Customers();
     }

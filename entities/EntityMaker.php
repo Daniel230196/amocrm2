@@ -7,7 +7,7 @@ use core;
 /*
  * Абстрактный класс для создания списка сущностей
  * */
-abstract class EntityMaker
+abstract class EntityMaker implements MakerInterface
 {
     /*
      * Список всех сущностей
@@ -51,7 +51,7 @@ abstract class EntityMaker
     /*
      * Метод, возвращающий экземпляр сущности
      * */
-    abstract protected function makeEntity() : Entity;
+    abstract public function makeEntity() : Entity;
 
     /*
      * Метод, получающий массив значений из сущности

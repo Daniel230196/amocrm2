@@ -28,6 +28,16 @@ class ApiConnection
     {
     }
 
+    public function get(string $type, string $uri = null)
+    {
+        if (is_null($uri)) {
+            $uri = 'api/v4/' . $type;
+        }
+
+        $method = 'GET';
+        return $this->curlRequest($method, $uri);
+    }
+
     /*
      * Метод, инициализирующий необходимые для соединения данные
      * */
@@ -84,11 +94,10 @@ class ApiConnection
      * Метод, производящий curl-запросы
      *
      * */
-    private function curlRequest(array $data, string $method, string $uri)
+    private function curlRequest(string $method, string $uri, array $data = null)
     {
         $link = self::$subdomain . $uri;
         $headers = $this->getHeaders();
-        $data = json_encode($data);
         $this->curl = curl_init();
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
@@ -98,11 +107,16 @@ class ApiConnection
         curl_setopt($this->curl, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($this->curl, CURLOPT_URL, $link);
         curl_setopt($this->curl, CURLOPT_CUSTOMREQUEST, $method);
-        curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+
+        if(!is_null($data)){
+            $data = json_encode($data);
+            curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+        }
+
         $response = curl_exec($this->curl);
+
         curl_close($this->curl);
         $test = json_decode($response,true);
-
         if(isset($test['status']) && $test['status'] === 401){
             $this->refreshToken();
             ++static::$count;
@@ -123,7 +137,7 @@ class ApiConnection
         $data = $apiHelper->getLeads();
         $method = 'POST';
 
-        return $this->curlRequest($data, $method, $uri);
+        return $this->curlRequest($method, $uri, $data);
 
 
 
@@ -138,7 +152,7 @@ class ApiConnection
         $method = 'POST';
         $data = $apiHelper->getCustomers();
 
-        return $this->curlRequest($data,$method,$uri);
+        return $this->curlRequest($method,$uri, $data);
     }
 
     /*
@@ -150,7 +164,7 @@ class ApiConnection
         $method = 'POST';
         $data = $binder->getRequestData();
 
-        return $this->curlRequest($data,$method,$uri);
+        return $this->curlRequest($method,$uri,$data);
     }
 
     /*
@@ -163,7 +177,7 @@ class ApiConnection
         $method = 'PATCH';
         $data = $model->getData();
 
-        return $this->curlRequest($data, $method,$uri);
+        return $this->curlRequest($method,$uri,$data);
     }
 
     /*
@@ -175,7 +189,7 @@ class ApiConnection
         $data = $note->getData();
         $method = 'POST';
 
-        return $this->curlRequest($data, $method, $uri);
+        return $this->curlRequest($method, $uri, $data);
 
 
     }
@@ -189,7 +203,7 @@ class ApiConnection
         $method = 'POST';
         $data = $task->getAddData();
 
-        return $this->curlRequest($data,$method,$uri);
+        return $this->curlRequest($method,$uri,$data);
     }
 
     public static function addCustomFieldText(string $entity)
