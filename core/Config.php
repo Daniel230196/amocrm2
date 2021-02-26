@@ -39,7 +39,6 @@ class Config
                $value = array_key_exists($key, $newConfigElements) ? $newConfigElements[$key] : $value;
            }
         }
-        var_dump(static::$confPath.$type.'.json');
         file_put_contents(self::$confPath.$type.'.json', json_encode(static::$config[$type], JSON_PRETTY_PRINT));
     }
 
@@ -61,11 +60,6 @@ class Config
         }
         return self::$config;
 
-    }
-
-    private function __construct()
-    {
-        static::init();
     }
 
 }
