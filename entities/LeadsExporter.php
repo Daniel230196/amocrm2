@@ -17,31 +17,39 @@ class LeadsExporter implements ExporterInterface
     private ApiConnection $api;
     private array $leadsId;
     private array $columns = [
-        ['name', 'created', 'company','contact','tags','custom fields'],
+        ['Name', 'Created', 'Company','Contact','Tags','Custom fields'],
     ];
 
     public function __construct(array $data, FileCreatorInterface $creator)
     {
-        $this->leadsId = $data['id'];
+        $this->leadsId = array_map('intval', $data['id']);
         $this->creator = $creator;
         $this->api = ApiConnection::getInstance();
     }
 
+    /*
+     * Метод возвращает отформатироанные данные для создания файла
+     * */
     public function getAllData() : array
     {
        return $this->columns;
     }
 
+    /*
+     * Основной метод класса.
+     * Создание файла через обращение к CsvCreator
+     * */
     public function export()
     {
         $leads = $this->api->get('leads', $this->formUri());
         $leads = json_decode($leads, true)['_embedded']['leads'];
         $this->extract($leads);
-
         $this->creator->create($this);
-        //return $leads;
     }
 
+    /*
+     * Метод, формирующий строку запроса для API
+     * */
     private function formUri(): string
     {
         $uri = 'api/v4/leads?';
@@ -52,6 +60,9 @@ class LeadsExporter implements ExporterInterface
         return $uri . 'with=companies,contacts';
     }
 
+    /*
+     * Метод, "упаковывающий" данные в нужном формате
+     * */
     private function extract(array $leads)
     {
         for ($i = 0; $i < count($leads); ++$i) {
@@ -80,6 +91,10 @@ class LeadsExporter implements ExporterInterface
 
     }
 
+    /*
+     * Вспомогательный метод, для форматирования
+     * кастомных полей сущности
+     * */
     private function extractCustomFields(array $customFields) : array
     {
         $fields = [];
@@ -87,13 +102,18 @@ class LeadsExporter implements ExporterInterface
             $fields[$i]['name'] = $customFields[$i]['field_name'];
             $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
         }
+
         return $fields;
     }
 
+    /*
+     * Метод возвращает список контактов и сделок
+     * (только name & id)
+     * */
     private function entityList() : array
     {
-        $comp = json_decode($this->api->get('companies'),true)['_embedded']['companies'];
-        $contacts = json_decode($this->api->get('contacts'), true)['_embedded']['contacts'];
+        $comp = json_decode($this->api->get('companies', 'api/v4/companies?limit=10000'),true)['_embedded']['companies'];
+        $contacts = json_decode($this->api->get('contacts', 'api/v4/contacts?limit=10000'), true)['_embedded']['contacts'];
         $new = [];
         $callback = function ($value) use (&$new){
             return $new[$value['id']] = $value['name'];
@@ -104,12 +124,20 @@ class LeadsExporter implements ExporterInterface
         return $new;
     }
 
+    /*
+     * Метод вычисляет схождение седлок и контактов с основным массивом по ID
+     * */
     private function intersect()
     {
         $boundEntities = $this->entityList();
+
         foreach($this->data as &$value){
+
             $value['company'] = $boundEntities[$value['company']];
             $value['contact'] = $boundEntities[$value['contact']];
+            echo '<pre>';
+            var_dump($value['company']);
+            echo '</pre>';
         }
     }
 }

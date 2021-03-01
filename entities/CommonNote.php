@@ -3,7 +3,9 @@
 
 namespace entities;
 
-
+/*
+ * Класс текстового примечания
+ * */
 class CommonNote extends BaseNote
 {
     public function __construct(array $data)

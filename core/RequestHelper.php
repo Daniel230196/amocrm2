@@ -7,9 +7,7 @@ use core\test\ApiConnectionException;
 use entities\CompaniesMaker;
 use entities\ContactsMaker;
 use entities\CustomerMaker;
-use entities\EntityMaker;
 use entities\LeadsMaker;
-use entities\MakerInterface;
 
 /*
  * Класс-посредник для выполнения комплексных запросов к АПИ

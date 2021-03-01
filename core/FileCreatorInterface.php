@@ -9,5 +9,5 @@ use entities\ExporterInterface;
 
 interface FileCreatorInterface
 {
-    public static function create(ExporterInterface $exporter);
+    public function create(ExporterInterface $exporter);
 }

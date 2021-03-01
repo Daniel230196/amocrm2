@@ -22,8 +22,9 @@ class Request
     public function __construct()
     {
         $this->data = filter_var_array($_REQUEST);
-        $this->uri = $_SERVER['REQUEST_URI'];
+        $this->uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '/';
     }
+
     /*
      * Получить данные запроса
      * */
@@ -31,27 +32,31 @@ class Request
     {
         return $this->data;
     }
+
     /*
      * Получить запрашиваемый контроллер
      * */
-    public function getContr()
+    public function getContr() : string
     {
         return $this->explodeUri()[1];
 
     }
+
     /*
      * Получить запрашиваемый метод
      * */
-    public function getMethod()
+    public function getMethod() : string
     {
         $uri = $this->explodeUri()[2];
-        return explode('?',$uri)[0];
+        $uri = isset($uri) ? $uri: 'default';
+        return $uri !== 'default' ? explode('?',$uri)[0] : 'default';
     }
+
     /*
      * Вспомогательная функция, разбивающая строку запроса
      * */
     private function explodeUri()
     {
-       return  explode('/',$this->uri);
+        return $this->uri == '/' ? ['', 'Controller', 'render'] : explode('/',$this->uri);
     }
 }

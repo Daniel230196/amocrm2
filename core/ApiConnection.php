@@ -77,16 +77,16 @@ class ApiConnection
         curl_setopt($curl,CURLOPT_POSTFIELDS, json_encode($params));
         curl_setopt($curl,CURLOPT_SSL_VERIFYPEER, 1);
         curl_setopt($curl,CURLOPT_SSL_VERIFYHOST, 2);
-        $out = curl_exec($curl);
-        $code = curl_getinfo($curl, CURLINFO_HTTP_CODE);
+        $response = curl_exec($curl);
         curl_close($curl);
-        $out = json_decode($out, true);
 
-        Config::getInstance()->set('api',$out);
+        $response = json_decode($response, true);
+
+        Config::getInstance()->set('api',$response);
 
         self::init();
 
-        return $out;
+        return $response;
 
     }
 
@@ -114,13 +114,14 @@ class ApiConnection
         }
 
         $response = curl_exec($this->curl);
-
         curl_close($this->curl);
-        $test = json_decode($response,true);
-        if(isset($test['status']) && $test['status'] === 401){
+
+        $check = json_decode($response,true);
+
+        if(isset($check['status']) && $check['status'] === 401){
             $this->refreshToken();
             ++static::$count;
-            return static::$count > 1 ? false : $this->curlRequest(json_decode($data,true),$method,$uri);
+            return static::$count > 1 ? false : $this->curlRequest($method, $uri, json_decode($data,true));
         }else{
             return $response;
         }
@@ -204,36 +205,6 @@ class ApiConnection
         $data = $task->getAddData();
 
         return $this->curlRequest($method,$uri,$data);
-    }
-
-    public static function addCustomFieldText(string $entity)
-    {
-        $link ='https://dann70s.amocrm.ru/api/v4/' . $entity . '/custom_fields';
-
-        $headers[] = 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImE2Njg0ODg3MTA0YjQ2MDk3MTYzYTM2MGMxNGVmNzg3ZTY3NGM2YmU1YmViZTJhMDhlNzZlMzYzMDEzNmU5MGJjMzhjM2ZlMzQ2M2RmYjVhIn0.eyJhdWQiOiJkMzA5MjkyNy1lY2Y4LTRlZjQtODdkOS00ODA1NTc3ZDVjNWQiLCJqdGkiOiJhNjY4NDg4NzEwNGI0NjA5NzE2M2EzNjBjMTRlZjc4N2U2NzRjNmJlNWJlYmUyYTA4ZTc2ZTM2MzAxMzZlOTBiYzM4YzNmZTM0NjNkZmI1YSIsImlhdCI6MTYxMzc2OTIzNiwibmJmIjoxNjEzNzY5MjM2LCJleHAiOjE2MTM4NTU2MzYsInN1YiI6IjY3NjEwMTQiLCJhY2NvdW50X2lkIjoyOTMwMjM3NSwic2NvcGVzIjpbInB1c2hfbm90aWZpY2F0aW9ucyIsImNybSIsIm5vdGlmaWNhdGlvbnMiXX0.Xrrh4Z1acORVLv36EyCcpXr-Te6IvSetpnnrMKrAvR-4gBaGpuqQaL6GmV6c_1u-uws4fH-I-xOzmzwt3bBW22FYXyAS7qT6kZtdMolOJAydiagPyw1Vx1TZpaSY4S1TmaBPlW9ZSxb2GcupyaOAENldWpO-0QonOXe3Z8aCBEjqp3rpgXX1YT2oVPRCTLdaUVwa6S5EL2WwtG29DZquda_CFV02cIqGhiqlYJd9cZndmxRFQrBjYkiimoFgCRzKsdfNx7pMzLq_mKZ2bGP9HENu5_cCvWINrMdEJjV-q8Toflpnureru9vvgUUgw1wh8Xxw8Q-IoGCpXLFzOV3Exg';
-        $headers[] = 'Content-Type: application/json';
-        //$data = json_encode($binder->getRequestData());
-
-        $data = [[
-            "name" => "text",
-            "type" => "text",
-        ]];
-
-        $curl = curl_init();
-
-        curl_setopt($curl, CURLOPT_HTTPHEADER, $headers);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
-        curl_setopt($curl, CURLOPT_HEADER, false);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, 1);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);
-        curl_setopt($curl, CURLOPT_URL, $link);
-        curl_setopt($curl, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($curl, CURLOPT_POSTFIELDS, json_encode($data));
-        $response = curl_exec($curl);
-        curl_close($curl);
-
-        return $response;
     }
 
     /*

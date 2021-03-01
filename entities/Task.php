@@ -6,6 +6,9 @@ namespace entities;
 
 use core\ApiConnection;
 
+/*
+ * Класс сущности задачи
+ * */
 class Task implements FIllableInterface
 {
     /*

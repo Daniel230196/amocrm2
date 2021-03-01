@@ -3,7 +3,9 @@
 
 namespace entities;
 
-
+/*
+ * Класс, создающий сущности контактов
+ * */
 class ContactsMaker extends EntityMaker
 {
 

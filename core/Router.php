@@ -24,7 +24,7 @@ class Router
      * */
     public static array $routes = [
         'ApiRequestController' => ['create','text','note','task','taskComplete','test'],
-        'WidgetController' => ['export', 'test']
+        'WidgetController' => ['export', 'download']
     ];
 
     /*

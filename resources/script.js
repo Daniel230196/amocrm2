@@ -1,7 +1,8 @@
+let alert = $('#alert');
+
 $('#count').click( (e) => {
     e.preventDefault();
     let count = $('input[name="count"]').val()
-    let alert = $('#alert')
     if(count > 10000 || count < 0){
        alert.addClass('error')
        alert.text('Invalid count of entities')
@@ -9,6 +10,7 @@ $('#count').click( (e) => {
     }else {
         requestData({count: count}, 'apiRequest/create')
        async function requestData(data, uri){
+
              $.ajax({
                 url: uri,
                 method: 'post',
@@ -36,6 +38,3 @@ $('#count').click( (e) => {
 
     }
 })
-
-
-

@@ -6,6 +6,9 @@ namespace entities;
 
 use Faker\Factory;
 
+/*
+ * Класс текстового примечания
+ * */
 class IncallNote extends BaseNote
 {
 

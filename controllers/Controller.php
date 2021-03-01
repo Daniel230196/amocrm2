@@ -4,6 +4,10 @@ namespace controllers;
 
 use core\Request;
 
+
+/*
+ * Главный контроллер приложения
+ * */
 class Controller
 {
     /*

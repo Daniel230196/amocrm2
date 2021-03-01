@@ -6,7 +6,6 @@ namespace entities;
 /*
  * Класс покупателей
  * */
-
 class Customers extends Entity
 {
     public function __construct()
@@ -15,6 +14,9 @@ class Customers extends Entity
         $this->seed();
     }
 
+    /*
+     * Заполнение случайными значениями
+     * */
     public function seed(): void
     {
         $this->data = [

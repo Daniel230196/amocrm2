@@ -6,7 +6,6 @@ namespace entities;
 /*
  * Класс сделок
  * */
-
 class Leads extends Entity
 {
     public function __construct()

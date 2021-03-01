@@ -6,6 +6,9 @@ namespace entities;
 
 use core\ApiConnection;
 
+/*
+ * Класс , предназн для заполнения кастомных полей сущностей
+ */
 class CustomField implements FIllableInterface
 {
     public int $entityId;
@@ -13,6 +16,10 @@ class CustomField implements FIllableInterface
     public string $type;
     public array $data;
     public $paramsData;
+
+    /*
+     * Массив соответствия (сущность => Id поля типа текст)
+     * */
     protected array $fields = [
         'leads' => 523675,
         'companies' => 522609,
@@ -38,7 +45,6 @@ class CustomField implements FIllableInterface
                 ]]
             ]]
         ];
-        var_dump($this->data[0]['custom_fields_values'][0]['values']);
     }
 
     /*

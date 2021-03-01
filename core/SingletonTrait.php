@@ -3,7 +3,10 @@
 
 namespace core;
 
-
+/*
+ * Трейт - синглтон со встроенной в метод получения инициализацией
+ *
+ * */
 trait SingletonTrait
 {
     private static $instance;

@@ -3,7 +3,9 @@
 
 namespace entities;
 
-
+/*
+ * Класс, создающий сущности покупателей
+ * */
 class CustomerMaker extends EntityMaker
 {
 
