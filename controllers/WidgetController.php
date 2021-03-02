@@ -36,12 +36,12 @@ class WidgetController extends Controller
             exit();
         }
 
-        $file = file_get_contents(__DIR__ . '/../core/testcsv/test.csv');
+        $file = file_get_contents(__DIR__ . '/../core/files/list.csv');
         header('Access-Control-Allow-Origin: https://dann70s.amocrm.ru');
         header('Content-type: text/csv');
         header('Content-Disposition: attachment; filename=leads.csv');
         header("Accept-Ranges: bytes");
-        header("Content-Length: " . filesize($file));
+        //header("Content-Length: " . filesize($file));
 
         echo $file;
     }

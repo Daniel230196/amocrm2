@@ -11,29 +11,23 @@ use entities\ExporterInterface;
  * */
 class CsvCreator implements FileCreatorInterface
 {
-
     /*
      * Метод, создающий файл в формате Csv
      * */
     public function create(ExporterInterface $exporter)
     {
-        $f = fopen(__DIR__.'/testcsv/test.csv', 'w');
+        $f = fopen(__DIR__.'/files/list.csv', 'w');
         $data = $exporter->getAllData();
-        foreach($data as &$value){
 
-            for($i = 0; $i <= count($value); ++$i){
-                if(is_array($value[$i]) && count($value[$i]) > 0){
-                    foreach ($value[$i] as $item){
-                        $value[$i] = implode(' : ', $item);
-                    }
+        $header = $data[0];
 
-                }elseif(is_array($value[$i]) && count($value[$i]) == 0 ){
-                    $value[$i] = '';
-                }
+        foreach ($data as &$value){
+            for($i = 0; $i < count($header); ++$i){
+                $value[$i] = !isset($value[$i]) ? '' : $value[$i];
             }
             fputcsv($f, $value);
-
         }
+
         fclose($f);
     }
 

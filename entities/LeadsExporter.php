@@ -7,6 +7,7 @@ namespace entities;
 use core\ApiConnection;
 use core\FileCreatorInterface;
 
+
 /*
  * Класс, реализующий экспорт сущностей сделок
  * */
@@ -17,8 +18,9 @@ class LeadsExporter implements ExporterInterface
     private ApiConnection $api;
     private array $leadsId;
     private array $columns = [
-        ['Name', 'Created', 'Company','Contact','Tags','Custom fields'],
+        ['ID', 'Название сделки', 'Бюджет', 'Ответственный', 'Дата создания сделки', 'Кем создана сделка', 'Дата редактирования', 'Кем редактирована', 'Дата закрытия', 'Теги', 'Полное имя контакта', 'Компания контакта', 'Ответственный за контакт', 'Компания']
     ];
+    const RESPONSABLE = 'Даниил';
 
     public function __construct(array $data, FileCreatorInterface $creator)
     {
@@ -66,19 +68,40 @@ class LeadsExporter implements ExporterInterface
     private function extract(array $leads)
     {
         for ($i = 0; $i < count($leads); ++$i) {
-            $this->data[$i]['name'] = $leads[$i]['name'];
-            $this->data[$i]['created'] = date("Y-m-d H:i:s", $leads[$i]['created_at']);
-            $this->data[$i]['company'] = $leads[$i]['_embedded']['companies'][0]['id'];
-            $this->data[$i]['contact'] = $leads[$i]['_embedded']['contacts'][0]['id'];
-            $this->data[$i]['tags'] = $leads[$i]['_embedded']['tags'];
-            if (!is_null($leads[$i]['custom_fields_values'])){
-                $this->data[$i]['custom_fields'] = $this->extractCustomFields($leads[$i]['custom_fields_values']);
+
+            if( $i & 1){
+                usleep(200);
             }
+
+            $this->data[$i]['ID'] = $leads[$i]['id'];
+            $this->data[$i]['Название сделки'] = $leads[$i]['name'];
+            $this->data[$i]['Бюджет'] = $leads[$i]['price'];
+            $this->data[$i]['Ответственный'] = self::RESPONSABLE;
+            $this->data[$i]['Дата создания сделки'] = date("Y-m-d H:i:s", $leads[$i]['created_at']);
+            $this->data[$i]['Кем создана сделка'] = self::RESPONSABLE;
+            $this->data[$i]['Дата редактирования'] = date('Y-m-d H:i:s', $leads[$i]['updated_at']);
+            $this->data[$i]['Кем редактирована'] = self::RESPONSABLE;
+            $this->data[$i]['Дата закрытия'] = is_null($leads[$i]['closed_at']) ? '' : date('Y-m-d H:i:s',$leads[$i]['closed_at']);
+            $this->data[$i]['Теги'] = $this->extractTags($leads[$i]['_embedded']['tags']);
+            $this->data[$i]['Полное имя контакта'] = $this->getName($leads[$i]['_embedded'], 'contacts');
+            $this->data[$i]['Компания контакта'] = $this->getName($leads[$i]['_embedded'], 'companies');
+            $this->data[$i]['Ответственный за контакт'] = self::RESPONSABLE;
+            $this->data[$i]['Компания'] = $this->data[$i]['Компания контакта'];
+
+            if (!is_null($leads[$i]['custom_fields_values'])){
+                $fieldsData = $this->extractCustomFields($leads[$i]['custom_fields_values']);
+                foreach ($fieldsData as $field) {
+                    $x = array_search($field['name'], $this->columns[0]);
+                    $this->data[$i][$x] = $field['value'];
+                }
+
+            }
+
+
         }
-        $this->intersect();
 
         $j = 1;
-       foreach ($this->data as $value){
+        foreach ($this->data as $value){
            $x = count($value);
            for($i=1; $i <= $x; $i++){
                $res[$i] = array_shift($value);
@@ -91,6 +114,28 @@ class LeadsExporter implements ExporterInterface
 
     }
 
+    private function getName(array $contacts, string $type) : string
+    {
+        $id = $contacts[$type][0]['id'];
+        $entity = $this->api->get($type,'api/v4/' . $type . '/' . $id);
+        return json_decode($entity,true)['name'];
+    }
+
+    /*
+     * Метод для форматирования тегов сущности
+     * */
+    private function extractTags($tags) : string
+    {
+        if(count($tags) < 1){
+            return '';
+        }
+        $result = '';
+        foreach($tags as $tag){
+            $result .= $tag['name'].', ';
+        }
+        return $result;
+    }
+
     /*
      * Вспомогательный метод, для форматирования
      * кастомных полей сущности
@@ -98,46 +143,20 @@ class LeadsExporter implements ExporterInterface
     private function extractCustomFields(array $customFields) : array
     {
         $fields = [];
+
         for ($i=0; $i<count($customFields); $i++){
             $fields[$i]['name'] = $customFields[$i]['field_name'];
-            $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
+            if(in_array($fields[$i]['name'], $this->columns[0])){
+                $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
+                continue;
+            }else{
+                array_push($this->columns[0], $fields[$i]['name']);
+                $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
+            }
         }
 
         return $fields;
     }
 
-    /*
-     * Метод возвращает список контактов и сделок
-     * (только name & id)
-     * */
-    private function entityList() : array
-    {
-        $comp = json_decode($this->api->get('companies', 'api/v4/companies?limit=10000'),true)['_embedded']['companies'];
-        $contacts = json_decode($this->api->get('contacts', 'api/v4/contacts?limit=10000'), true)['_embedded']['contacts'];
-        $new = [];
-        $callback = function ($value) use (&$new){
-            return $new[$value['id']] = $value['name'];
-        };
 
-        array_map($callback,$comp);
-        array_map($callback,$contacts);
-        return $new;
-    }
-
-    /*
-     * Метод вычисляет схождение седлок и контактов с основным массивом по ID
-     * */
-    private function intersect()
-    {
-        $boundEntities = $this->entityList();
-
-        foreach($this->data as &$value){
-
-            $value['company'] = $boundEntities[$value['company']];
-            $value['contact'] = $boundEntities[$value['contact']];
-            echo '<pre>';
-            var_dump($value['company']);
-            echo '</pre>';
-        }
-    }
 }

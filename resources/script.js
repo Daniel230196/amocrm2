@@ -21,7 +21,7 @@ $('#count').click( (e) => {
                     alert.addClass('success')
                     alert.text(message);
                 },
-                error: function (jqXHR){
+                error: function (jqXHR,status , message){
                     message = ''
                     if(jqXHR.status === 401){
                         message = 'Token has been expired'
@@ -30,11 +30,42 @@ $('#count').click( (e) => {
                     }
                     alert.removeClass('none')
                     alert.addClass('error')
-                    alert.text(message)
+                    alert.text(status)
                 }
             })
         }
 
 
     }
+})
+
+
+
+$('#test').click( (e) =>{
+    e.preventDefault();
+    let id = [
+
+        3084029,
+        3084031,
+    ];
+    $.ajax({
+        url: 'https://c33cfbe51eca.ngrok.io/widget/export',
+       method: 'post',
+        data: {
+            id : id
+        },
+        success: function (data){
+            console.log('yes');
+            //window.location.href = '/widget/download';
+            alert.removeClass('none');
+            alert.addClass('success');
+            alert.text(data);
+        },
+        error: function (error){
+            alert.removeClass('none');
+            alert.addClass('error');
+            alert.text(error);
+        }
+        }
+    )
 })

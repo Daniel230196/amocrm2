@@ -47,8 +47,8 @@ class Request
      * */
     public function getMethod() : string
     {
-        $uri = $this->explodeUri()[2];
-        $uri = isset($uri) ? $uri: 'default';
+        $uri = isset($this->explodeUri()[2]) ? $this->explodeUri()[2] : 'default';
+
         return $uri !== 'default' ? explode('?',$uri)[0] : 'default';
     }
 

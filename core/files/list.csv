@@ -1,13 +1,3 @@
-Name,Created,Company,Contact,Tags,"Custom fields"
-Carpenter,"2021-03-01 18:08:12",MintCream,"Esteban Boyle",
-"Occupational Therapist Assistant","2021-03-01 18:08:13",Salmon,"Karlie Kunde",
-"Cutting Machine Operator","2021-03-01 18:08:42",Turquoise,"Richard Adams",
-"Transportation Attendant","2021-03-01 18:08:49",IndianRed,"Karolann Denesik",
-"Database Manager","2021-03-01 18:08:50",DarkSlateBlue,"Brycen O'Conner",
-Concierge,"2021-03-01 18:08:50",WhiteSmoke,"Destinee Weissnat",
-"Substation Maintenance","2021-03-01 18:08:50",LightSeaGreen,"Fae Hudson",
-Welder,"2021-03-01 18:08:50",DimGray,"Ignatius Schneider",
-"Wholesale Buyer","2021-03-01 18:08:50",DarkCyan,"Chanel Wilkinson",
-"Dental Laboratory Technician","2021-03-01 18:08:51",Aqua,"Blair Little",
-"Oil Service Unit Operator","2021-03-01 18:08:51",HotPink,"Dominique Murazik",
-"Radiologic Technologist","2021-03-01 18:10:58",LightSkyBlue,"Neha Flatley",
+ID,"Название сделки",Бюджет,Ответственный,"Дата создания сделки","Кем создана сделка","Дата редактирования","Кем редактирована","Дата закрытия",Теги,"Полное имя контакта","Компания контакта","Ответственный за контакт",Компания
+3084029,"Order Filler OR Stock Clerk",34,Даниил,"2021-03-02 16:49:27",Даниил,"2021-03-02 16:49:27",Даниил,,,"Kobe Reichert",MediumOrchid,Даниил,MediumOrchid,
+3084031,"Home Appliance Repairer",98,Даниил,"2021-03-02 16:49:27",Даниил,"2021-03-02 16:49:27",Даниил,,,"Asia Bashirian",Cornsilk,Даниил,Cornsilk,
