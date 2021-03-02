@@ -90,9 +90,15 @@ class LeadsExporter implements ExporterInterface
 
             if (!is_null($leads[$i]['custom_fields_values'])){
                 $fieldsData = $this->extractCustomFields($leads[$i]['custom_fields_values']);
+
                 foreach ($fieldsData as $field) {
-                    $x = array_search($field['name'], $this->columns[0]);
+                    $x = array_search($field['id'], $this->columns[0]);
+                    var_dump($this->columns[0]);
+                    $this->data = array_map('array_values', $this->data);
                     $this->data[$i][$x] = $field['value'];
+                    /*$fieldName = $this->getCustomFieldName($field['id']);
+                    $this->columns[0][$x] = $fieldName;*/
+
                 }
 
             }
@@ -100,18 +106,30 @@ class LeadsExporter implements ExporterInterface
 
         }
 
-        $j = 1;
+
+        foreach ($this->data as &$item){
+
+            $headerCount = count($this->columns[0]);
+
+            $res = [];
+            for($i = 0; $i < $headerCount; ++$i){
+                $res[$i] = empty($item[$i]) ? '' : $item[$i];
+            }
+            $item = $res;
+        }
+        /*$j = 1;
+        $header = count($this->columns[0]);
         foreach ($this->data as $value){
-           $x = count($value);
-           for($i=1; $i <= $x; $i++){
+
+           $res = [];
+           for($i=0; $i <= $header; $i++){
                $res[$i] = array_shift($value);
            }
            $this->columns[$j] = $res;
            ++$j;
 
-        }
-
-
+        }*/
+        $this->columns = array_merge($this->columns, $this->data);
     }
 
     private function getName(array $contacts, string $type) : string
@@ -121,6 +139,12 @@ class LeadsExporter implements ExporterInterface
         return json_decode($entity,true)['name'];
     }
 
+
+    private function getCustomFieldName(int $id)
+    {
+        $field = json_decode($this->api->get('leads', 'api/v4/leads/custom_fields/' . $id), true);
+        return $field['name'];
+    }
     /*
      * Метод для форматирования тегов сущности
      * */
@@ -145,16 +169,17 @@ class LeadsExporter implements ExporterInterface
         $fields = [];
 
         for ($i=0; $i<count($customFields); $i++){
-            $fields[$i]['name'] = $customFields[$i]['field_name'];
-            if(in_array($fields[$i]['name'], $this->columns[0])){
+
+            $fields[$i]['id'] = $customFields[$i]['field_id'];
+
+            if(in_array($fields[$i]['id'], $this->columns[0])){
                 $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
-                continue;
             }else{
-                array_push($this->columns[0], $fields[$i]['name']);
+                array_push($this->columns[0], $fields[$i]['id']);
+
                 $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
             }
         }
-
         return $fields;
     }
 

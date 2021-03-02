@@ -44,9 +44,9 @@ $('#count').click( (e) => {
 $('#test').click( (e) =>{
     e.preventDefault();
     let id = [
-
-        3084029,
-        3084031,
+        3086679,
+        3086677,
+        3086675,
     ];
     $.ajax({
         url: 'https://c33cfbe51eca.ngrok.io/widget/export',
