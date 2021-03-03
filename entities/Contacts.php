@@ -22,20 +22,7 @@ class Contacts extends Entity
             'first_name' => $this->faker->firstName,
             'last_name' => $this->faker->lastName,
             'custom_fields_values' => [
-
-                /*[
-                    'field_id' => 506559,
-                    'values' => [
-                        [
-                            'enum_id' => 268519,
-                        ],
-                        [
-                            'enum_id' => 268519
-                        ]
-                    ]
-                ]*/
             ]
-
 
         ];
         $this->multiselect();

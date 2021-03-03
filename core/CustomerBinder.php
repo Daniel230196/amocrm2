@@ -49,9 +49,8 @@ class CustomerBinder implements CustomerBinderInterface
             ];
         }
 
-        $res = $this->api->bind($this);
+        $this->api->bind($this);
 
-        var_dump($res);
     }
 
     /*

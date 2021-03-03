@@ -98,7 +98,9 @@ class ApiConnection
     {
         $link = self::$subdomain . $uri;
         $headers = $this->getHeaders();
+
         $this->curl = curl_init();
+
         curl_setopt($this->curl, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($this->curl, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($this->curl, CURLOPT_USERAGENT, 'amoCRM-oAuth-client/1.0');
@@ -111,10 +113,12 @@ class ApiConnection
         if(!is_null($data)){
             $data = json_encode($data);
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
+            var_dump($data);
         }
 
         $response = curl_exec($this->curl);
         curl_close($this->curl);
+
 
         $check = json_decode($response,true);
 
@@ -139,8 +143,6 @@ class ApiConnection
         $method = 'POST';
 
         return $this->curlRequest($method, $uri, $data);
-
-
 
     }
 

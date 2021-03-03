@@ -56,9 +56,9 @@ class LeadsExporter implements ExporterInterface
     /*
      * Метод возвращает отформатироанные данные для создания файла
      * */
-    public function getAllData() : array
+    public function getAllData(): array
     {
-       return $this->columns;
+        return $this->columns;
     }
 
     /*
@@ -94,7 +94,7 @@ class LeadsExporter implements ExporterInterface
     {
         for ($i = 0; $i < count($leads); ++$i) {
 
-            if( $i & 1){
+            if ($i & 1) {
                 usleep(200);
             }
 
@@ -106,22 +106,20 @@ class LeadsExporter implements ExporterInterface
             $this->data[$i]['Кем создана сделка'] = self::RESPONSABLE;
             $this->data[$i]['Дата редактирования'] = date('Y-m-d H:i:s', $leads[$i]['updated_at']);
             $this->data[$i]['Кем редактирована'] = self::RESPONSABLE;
-            $this->data[$i]['Дата закрытия'] = is_null($leads[$i]['closed_at']) ? '' : date('Y-m-d H:i:s',$leads[$i]['closed_at']);
+            $this->data[$i]['Дата закрытия'] = is_null($leads[$i]['closed_at']) ? '' : date('Y-m-d H:i:s', $leads[$i]['closed_at']);
             $this->data[$i]['Теги'] = $this->extractTags($leads[$i]['_embedded']['tags']);
             $this->data[$i]['Полное имя контакта'] = $this->getName($leads[$i]['_embedded'], 'contacts');
             $this->data[$i]['Компания контакта'] = $this->getName($leads[$i]['_embedded'], 'companies');
             $this->data[$i]['Ответственный за контакт'] = self::RESPONSABLE;
             $this->data[$i]['Компания'] = $this->data[$i]['Компания контакта'];
 
-            if (!is_null($leads[$i]['custom_fields_values'])){
+            if (!is_null($leads[$i]['custom_fields_values'])) {
                 $fieldsData = $this->extractCustomFields($leads[$i]['custom_fields_values']);
-                var_dump($fieldsData);
                 foreach ($fieldsData as $field) {
                     $x = array_search($field['id'], $this->columns[0]);
 
                     $fieldName = $this->getCustomFieldName($field['id']);
-                    self::$fields[$field['id'] ] = $fieldName;
-                    //$this->columns[0][$x] = $fieldName;
+                    self::$fields[$field['id']] = $fieldName;
                     $this->data = array_map('array_values', $this->data);
 
                     $this->data[$i][$x] = $field['value'];
@@ -130,21 +128,22 @@ class LeadsExporter implements ExporterInterface
                 }
 
             }
-            var_dump($this->data);
+
             //$this->data = array_map('array_values', $this->data);
 
         }
 
-        foreach($this->columns[0] as &$value){
-
-            $value = self::$fields[$value] ? self::$fields[$value] : $value;
+        foreach ($this->columns[0] as &$value) {
+            if (isset(self::$fields)) {
+                $value = self::$fields[$value] ? self::$fields[$value] : $value;
+            }
         }
 
-        foreach ($this->data as &$item){
+        foreach ($this->data as &$item) {
             $headerCount = count($this->columns[0]);
 
             $res = [];
-            for($i = 0; $i < $headerCount; ++$i){
+            for ($i = 0; $i < $headerCount; ++$i) {
                 $res[$i] = empty($item[$i]) ? '' : $item[$i];
             }
 
@@ -157,11 +156,11 @@ class LeadsExporter implements ExporterInterface
     /*
      * Метод возвращает имя сущности по указанному ID
      * */
-    private function getName(array $contacts, string $type) : string
+    private function getName(array $contacts, string $type): string
     {
         $id = $contacts[$type][0]['id'];
-        $entity = $this->api->get($type,'api/v4/' . $type . '/' . $id);
-        return json_decode($entity,true)['name'];
+        $entity = $this->api->get($type, 'api/v4/' . $type . '/' . $id);
+        return json_decode($entity, true)['name'];
     }
 
     /*
@@ -176,15 +175,17 @@ class LeadsExporter implements ExporterInterface
     /*
      * Метод для форматирования тегов сущности
      * */
-    private function extractTags($tags) : string
+    private function extractTags($tags): string
     {
-        if(count($tags) < 1){
+        if (count($tags) < 1) {
             return '';
         }
         $result = '';
-        foreach($tags as $tag){
-            $result .= $tag['name'].', ';
+        foreach ($tags as $tag) {
+            $result .= $tag['name'] . ',';
         }
+
+        $result = substr($result, 0, -1);
         return $result;
     }
 
@@ -192,24 +193,45 @@ class LeadsExporter implements ExporterInterface
      * Вспомогательный метод, для форматирования
      * кастомных полей сущности
      * */
-    private function extractCustomFields(array $customFields) : array
+    private function extractCustomFields(array $customFields): array
     {
         $fields = [];
 
-        for ($i=0; $i<count($customFields); $i++){
+        for($i = 0; $i < count($customFields); $i++) {
 
             $fields[$i]['id'] = $customFields[$i]['field_id'];
 
-            if(in_array($fields[$i]['id'], $this->columns[0])){
-                $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
+            if($customFields[$i]['field_type'] == 'multiselect'){
+
+                $fields[$i]['value'] = $this->extractMultiSelect($customFields[$i]);
             }else{
+                $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
+            }
+
+            if (!in_array($fields[$i]['id'], $this->columns[0])) {
+
                 array_push($this->columns[0], $fields[$i]['id']);
 
-                $fields[$i]['value'] = $customFields[$i]['values'][0]['value'];
             }
         }
         return $fields;
     }
 
+    /*
+     * Вспомогательный метод для форматирования доп поля мультисписок
+     * */
+    private function extractMultiSelect(array $multi) : string
+    {
+        $values = $multi['values'];
+        $res = [];
+        foreach ($values as $value){
+            $res[] = $value['value'];
+        }
+        return implode(',', $res);
+    }
 
+    private function getCustomValues()
+    {
+
+    }
 }

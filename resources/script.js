@@ -1,3 +1,4 @@
+
 let alert = $('#alert');
 
 $('#count').click( (e) => {
@@ -41,33 +42,33 @@ $('#count').click( (e) => {
 })
 
 
-/*
-$('#test').click( (e) =>{
+$('#testResult').click( (e) =>{
     e.preventDefault();
+    console.log('test');
     let id = [
-        3366525,
-        3366523,
-        3366521
+        3469367,
     ];
     $.ajax({
-        url: 'https://28a3bc7521e0.ngrok.io/widget/export',
-       method: 'post',
-        data: {
-            id : id
-        },
-        success: function (data){
-            console.log('yes');
-            //window.location.href = '/widget/download';
-            alert.removeClass('none');
-            alert.addClass('success');
-            alert.text(data);
-        },
-        error: function (error){
-            alert.removeClass('none');
-            alert.addClass('error');
-            alert.text(error);
-        }
+            url: 'https://0c8559c8323b.ngrok.io/widget/export',
+            method: 'post',
+            data: {
+                id : id
+            },
+            success: function (data){
+                console.log('yes');
+                //window.location.href = '/widget/download';
+                alert.removeClass('none');
+                alert.addClass('success');
+                alert.text(data);
+            },
+            error: function (error){
+                alert.removeClass('none');
+                alert.addClass('error');
+                alert.text(error);
+            }
         }
     )
-})*/
+})
+
+
 

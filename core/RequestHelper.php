@@ -50,8 +50,20 @@ class RequestHelper implements ApiRequestInterface
         $companiesData = $companiesMaker->makeList($count);
         $contactsData = $contactsMaker->makeList($count);
         $customersData = $customerMaker->makeList($count);
+
         $this->boundedList = $this->list($leadsData, $companiesData, $contactsData, $customersData);
     }
+
+    /*private function makeLists(int $count)
+    {
+        $leadsData = $this->leadsMaker->makeList($count);
+        $companiesData = $this->companiesMaker->makeList($count);
+        $contacts$this->contactsMaker->makeList($count);
+        $this->customerMaker->makeList($count);
+
+
+
+    }*/
 
     /*
      * Основной метод класса. Производит цепочку запросов к АПИ
@@ -60,18 +72,22 @@ class RequestHelper implements ApiRequestInterface
     {
         $leads = $this->getLeads();
         $customers = $this->getCustomers();
-
         $x = count($leads);
-        if ( $x > 50) {
-            $leads = array_chunk($leads, 50);
-            $customers = array_chunk($customers,50);
-             for($i=0; $i<=$x; ++$i){
+        if ( $x >= 10){
+            $leads = array_chunk($leads, 10);
+            $customers = array_chunk($customers,10);
+
+            $entities['leads'] = $leads;
+            $entities['customers'] = $customers;
+
+             for($i=0; $i<count($leads); ++$i){
+
                  $this->boundedList['leads'] = $leads[$i];
                  $this->boundedList['customers'] = $customers[$i];
 
                  // 3 запроса за вызов
                  $this->apiRequests();
-                 usleep(500);
+                 usleep(600);
              }
 
         } else {
@@ -122,6 +138,7 @@ class RequestHelper implements ApiRequestInterface
 
         $result['leads'] = $leadsData;
         $result['customers'] = $customersData;
+
         return $result;
     }
 
@@ -136,11 +153,21 @@ class RequestHelper implements ApiRequestInterface
                 throw new ApiConnectionException('0', );
             }
             $responseCustomers = $this->api->addCustomers($this);
+
             $response = array_merge(json_decode($responseLeads, true), json_decode($responseCustomers, true));
             $this->bindCustomers($response);
         }catch(ApiConnectionException $e){
             echo $e->getMessage().$e->getCode();
             exit;
         }
+    }
+
+    private function addCompanies()
+    {
+
+    }
+
+    private function addContacts()
+    {
     }
 }
