@@ -3,12 +3,13 @@ let alert = $('#alert');
 $('#count').click( (e) => {
     e.preventDefault();
     let count = $('input[name="count"]').val()
-    if(count > 10000 || count < 0){
+
+    if(count > 10000 || count <= 0){
        alert.addClass('error')
        alert.text('Invalid count of entities')
        alert.removeClass('none')
     }else {
-        requestData({count: count}, 'apiRequest/create')
+       requestData({count: count}, 'apiRequest/create')
        async function requestData(data, uri){
 
              $.ajax({
@@ -40,16 +41,16 @@ $('#count').click( (e) => {
 })
 
 
-
+/*
 $('#test').click( (e) =>{
     e.preventDefault();
     let id = [
-        3086679,
-        3086677,
-        3086675,
+        3366525,
+        3366523,
+        3366521
     ];
     $.ajax({
-        url: 'https://c33cfbe51eca.ngrok.io/widget/export',
+        url: 'https://28a3bc7521e0.ngrok.io/widget/export',
        method: 'post',
         data: {
             id : id
@@ -68,4 +69,5 @@ $('#test').click( (e) =>{
         }
         }
     )
-})
+})*/
+

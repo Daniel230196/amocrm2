@@ -31,8 +31,8 @@ class WidgetController extends Controller
     public function download()
     {
 
-        if ($_SERVER['HTTP_REFERER'] != 'https://dann70s.amocrm.ru/') {
-            echo 404;
+        if (!preg_match('/dann70s\.amocrm\.ru/', $_SERVER['HTTP_REFERER']) != false) {
+            echo $_SERVER['HTTP_REFERER'];
             exit();
         }
 

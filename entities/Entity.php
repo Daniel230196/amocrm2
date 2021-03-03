@@ -8,7 +8,7 @@ namespace entities;
 abstract class Entity
 {
     /*
-     * Фейкер для заполнения данными
+     * Фейкер для заполнения случайными данными
      * */
     protected $faker;
 

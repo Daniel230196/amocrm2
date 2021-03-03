@@ -10,15 +10,15 @@ $request = new c\Request();
 
 c\Router::start($request);
 
-
-/*$subdomain = 'dann70s';
+/*
+$subdomain = 'dann70s';
 $link = 'https://' . $subdomain . '.amocrm.ru/oauth2/access_token';
 
 $data = [
     'client_id' => '6a24cf0e-68dc-48ea-b5c5-343f9818a0d9',
     'client_secret' => 'xdPH0pqiXzt9RtoD1GYCXELGbGmq9ZTBKksjdWFdMXo1KdZkf8HKuyOG0O3HDFMX',
     'grant_type' => 'authorization_code',
-    'code' => 'def50200e5b2746ef55a5f8251437abb0b0aa9ab502565744abad05ce6f87f94d56550bcfe841b2da95dc826f4583abbe56add9f9e4cf07466299933a9ddd46ca2bf776d3042bf391585fd1758f27c12159b747f9979f9bc675f78d2776d997495138fc826e253de32217436c0e0e3c0219d28fbad6a65f035d0fdd5ac8be57774544ceba1cc1080001e24bf2a1e8de70860ef7cb729ce032edb23621a81740fe23330df6d401728cae5877d09f2aa45a485211918856b66853e2ba261fd466d9e418b4e27e8dff23535cc928824b8e0ffce4f1e12f86e72f868ad7bbbcae77b9f5e4cf36578a52cfaee9a6b429e7c673ddcc0dceace29cad59f0eb684a415814e157e2c78d8efc242a4e0bcd94e6eb777c3a6b4f68c32582e06bb55674a8d27e131aa12da7c42f493d3b83cd2764de2cf483e01dd977bbdd599e77081baeff5f56582bad489b10bfab58caad5d886b7516bc8410a1c251239350212befd4872e079b93d13c1831ee7dd0474dd43e6b2464c284adc1aafcea7f4809e3e742736c37c3f99de2c57d5fb8bbe62b71e0bf52e0a80d0ccc66ec04a95d659c359f0b0204a1614afd310963bf563ddd0b75f67aead1457f61c8ef28632f0d0',
+    'code' => 'def5020019eec7de8305d738c75e26e5ed556b1ac82d770d041aa0bdcb40fad5c75d0dc51842a37a812495486e919db05f4b4b5617a69715453a0d397be604b0aa8511700b35e1ceeee21215d07adf8ae961583d516cbd8e93aa68c4c5372b108a3445f159d7f25aef079c65b1ea0252381adde64f00765dbd3530de8f2f8a765d0139c8830469deefbf4e8710bddfdb587537ae741580e54bf045a539b63d0358ca552891accb8032ba156c51d901e585ee50ad416e62ebe8ab11e55dc9f929eedf16265a544efaa3874080cd26816e80629c931d8253eb2300ae165bc8f82e0c939d89363533dd0db0cd9115267c482923f12ba1e179dab4c9c43d5555455df90305d0d71f2c52630ab23a1f297afebd0446a62bdd0528f9a1aedef84bb39b520f8bede43f09f19637a69d411cc5a04b21f9e1b35b6d15b39331666b59756cbeac13e01b93c6611a912eb465df7ef8b68d376a1e450fa856285c97373a489e5cee58d4dfe04036f17c23b2da0004e5d8ee3929c50011dfd5a24d620b7d1d56d9d972e7b8e754278d541d31c9d1020f5a5ef2f11aa3ae275ebd0e7d30878cf13f0da92d7e326d57508ecefd8eb9d8009251a2d5712b6fbe71367d4f',
     'redirect_uri' => 'https://google.com',
 ];
 
@@ -68,5 +68,5 @@ $response = json_decode($out, true);
 $access_token = $response['access_token'];
 $refresh_token = $response['refresh_token'];
 $token_type = $response['token_type'];
-$expires_in = $response['expires_in'];*/
-
+$expires_in = $response['expires_in'];
+*/

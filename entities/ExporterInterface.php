@@ -4,7 +4,7 @@
 namespace entities;
 
 /*
- * Интерфейс, для экспорта файла
+ * Интерфейс, для экспортируемых сущностей
  * */
 interface ExporterInterface
 {

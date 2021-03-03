@@ -13,10 +13,34 @@ use core\FileCreatorInterface;
  * */
 class LeadsExporter implements ExporterInterface
 {
+    /*
+     * Вспомогательный массив с Id и именами кастомных полей
+     * */
+    private static array $fields;
+
+    /*
+     * Массив с промежуточными данными
+     * */
     private array $data;
+
+    /*
+     * Объект, генерирующий файл
+     * */
     private FileCreatorInterface $creator;
+
+    /*
+     * Объект для подключения к АПИ
+     * */
     private ApiConnection $api;
+
+    /*
+     * Массив id сделок для запроса
+     * */
     private array $leadsId;
+
+    /*
+     * Основной массив данных для генерации файла
+     * */
     private array $columns = [
         ['ID', 'Название сделки', 'Бюджет', 'Ответственный', 'Дата создания сделки', 'Кем создана сделка', 'Дата редактирования', 'Кем редактирована', 'Дата закрытия', 'Теги', 'Полное имя контакта', 'Компания контакта', 'Ответственный за контакт', 'Компания']
     ];
@@ -39,12 +63,13 @@ class LeadsExporter implements ExporterInterface
 
     /*
      * Основной метод класса.
-     * Создание файла через обращение к CsvCreator
+     * Делегирование создания файла объекту CsvCreator
      * */
     public function export()
     {
         $leads = $this->api->get('leads', $this->formUri());
         $leads = json_decode($leads, true)['_embedded']['leads'];
+
         $this->extract($leads);
         $this->creator->create($this);
     }
@@ -90,48 +115,48 @@ class LeadsExporter implements ExporterInterface
 
             if (!is_null($leads[$i]['custom_fields_values'])){
                 $fieldsData = $this->extractCustomFields($leads[$i]['custom_fields_values']);
-
+                var_dump($fieldsData);
                 foreach ($fieldsData as $field) {
                     $x = array_search($field['id'], $this->columns[0]);
-                    var_dump($this->columns[0]);
+
+                    $fieldName = $this->getCustomFieldName($field['id']);
+                    self::$fields[$field['id'] ] = $fieldName;
+                    //$this->columns[0][$x] = $fieldName;
                     $this->data = array_map('array_values', $this->data);
+
                     $this->data[$i][$x] = $field['value'];
-                    /*$fieldName = $this->getCustomFieldName($field['id']);
-                    $this->columns[0][$x] = $fieldName;*/
+
 
                 }
 
             }
-
+            var_dump($this->data);
+            //$this->data = array_map('array_values', $this->data);
 
         }
 
+        foreach($this->columns[0] as &$value){
+
+            $value = self::$fields[$value] ? self::$fields[$value] : $value;
+        }
 
         foreach ($this->data as &$item){
-
             $headerCount = count($this->columns[0]);
 
             $res = [];
             for($i = 0; $i < $headerCount; ++$i){
                 $res[$i] = empty($item[$i]) ? '' : $item[$i];
             }
+
             $item = $res;
         }
-        /*$j = 1;
-        $header = count($this->columns[0]);
-        foreach ($this->data as $value){
 
-           $res = [];
-           for($i=0; $i <= $header; $i++){
-               $res[$i] = array_shift($value);
-           }
-           $this->columns[$j] = $res;
-           ++$j;
-
-        }*/
         $this->columns = array_merge($this->columns, $this->data);
     }
 
+    /*
+     * Метод возвращает имя сущности по указанному ID
+     * */
     private function getName(array $contacts, string $type) : string
     {
         $id = $contacts[$type][0]['id'];
@@ -139,12 +164,15 @@ class LeadsExporter implements ExporterInterface
         return json_decode($entity,true)['name'];
     }
 
-
+    /*
+     * Метод возвращает имя кастомного поля по ID
+     * */
     private function getCustomFieldName(int $id)
     {
         $field = json_decode($this->api->get('leads', 'api/v4/leads/custom_fields/' . $id), true);
         return $field['name'];
     }
+
     /*
      * Метод для форматирования тегов сущности
      * */

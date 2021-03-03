@@ -9,7 +9,7 @@
     <title>Document</title>
 </head>
 <body>
-<form action="apiRequest/create" name="add">
+<form action="apiRequest/create" name="add" class="form">
     <h3>Add Entities</h3>
     <label for="count"> Select count of entities (1 - 10000)</label>
     <input type="number" name="count">
@@ -17,7 +17,7 @@
     <div id="alert" class="none">
     </div>
 </form>
-<form action="apiRequest/text">
+<form action="apiRequest/text" class="form">
     <h3>Add a text</h3>
     <label for="id">EntityID</label>
     <input type="number" name="id">
@@ -32,7 +32,7 @@
     <textarea name="data"  cols="30" rows="1"></textarea>
     <input type="submit">
 </form>
-<form action="apiRequest/note">
+<form action="apiRequest/note" class="form">
     <h3> Add a note </h3>
     <label for="id">Entity ID</label>
     <input type="number" name="id">
@@ -50,7 +50,7 @@
     </select>
     <input type="submit">
 </form>
-<form action="apiRequest/task">
+<form action="apiRequest/task" class="form">
     <h3>Add a task</h3>
     <label for="entity">Entity ID</label>
     <input type="number" name="entity">
@@ -69,7 +69,7 @@
     <input type="number" name="user">
     <input type="submit">
 </form>
-<form action="apiRequest/taskComplete">
+<form action="apiRequest/taskComplete" class="form">
     <h3>Complete task by ID</h3>
     <label for="id">Task id</label>
     <input type="number" name="id">
@@ -77,9 +77,7 @@
     <input type="text" name="result">
     <input type="submit">
 </form>
-<form action="">
-    <input id="test" type="submit">
-</form>
+
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="../resources/script.js"></script>
 </body>

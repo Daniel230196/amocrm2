@@ -21,7 +21,7 @@ class CustomField implements FIllableInterface
      * Массив соответствия (сущность => Id поля типа текст)
      * */
     protected array $fields = [
-        'leads' => 523675,
+        'leads' => 800693,
         'companies' => 522609,
         'customers' => 523735,
         'contacts' => 522607,
