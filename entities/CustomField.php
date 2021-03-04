@@ -6,18 +6,34 @@ namespace entities;
 
 use core\ApiConnection;
 
-/*
+/**
  * Класс , предназн для заполнения кастомных полей сущностей
- */
+ **/
 class CustomField implements FIllableInterface
 {
     public int $entityId;
+
+    /**
+     * ID Кастомного поля, в соответствии с типом сущности
+     * */
     public int $id;
+
+    /**
+     * Тип сущности
+     * */
     public string $type;
+
+    /**
+     * Массив данных для запроса к API
+     * */
     public array $data;
+
+    /**
+     * Значения кастомных полей
+     * */
     public $paramsData;
 
-    /*
+    /**
      * Массив соответствия (сущность => Id поля типа текст)
      * */
     protected array $fields = [
@@ -29,6 +45,11 @@ class CustomField implements FIllableInterface
 
     protected ApiConnection $api;
 
+    /**
+     * Конструктор класса
+     * производит форматирование данных для запроса
+     * @return array $params
+     * */
     public function __construct(array $params)
     {
         $this->entityId = $params['id'];
@@ -47,20 +68,22 @@ class CustomField implements FIllableInterface
         ];
     }
 
-    /*
-     * метод возвращает данные для запроса
+    /**
+     * Метод возвращает данные для запроса
+     * @return array
      * */
     public function getData() : array
     {
         return $this->data;
     }
 
-    /*
+    /**
     * Метод запроса к апи для изменения доп. поля текст
+    * @return void
     * */
-    public function patch()
+    public function patch() : void
     {
-        return $this->api->patch($this);
+         $this->api->patch($this);
     }
 
 }

@@ -5,23 +5,25 @@ namespace controllers;
 use core\Request;
 
 
-/*
- * Главный контроллер приложения
+/**
+ * Основной контроллер приложения
  * */
 class Controller
 {
-    /*
+    /**
      * View контроллера
      * */
     protected string $view;
-    /*
+
+    /**
      * Экземпляр запроса
      * */
     protected Request $request;
-    /*
+
+    /**
      * Путь к view-файлам
      * */
-    protected string $viewPath = 'view/';
+    const VIEW_PATH = 'view/';
 
     public function __construct(Request $request)
     {
@@ -30,6 +32,6 @@ class Controller
 
     public function render()
     {
-        include $this->viewPath.$this->view.'.php';
+        include self::VIEW_PATH.$this->view.'.php';
     }
 }

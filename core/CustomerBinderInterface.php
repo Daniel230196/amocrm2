@@ -3,8 +3,15 @@
 
 namespace core;
 
-
+/**
+ * Интерфейс для организации связей покупателей
+ **/
 interface CustomerBinderInterface
 {
-    public function bindCustomers(array $apiResponse);
+    /**
+     * Метод, организующий связь
+     * @param array
+     * @return void
+     **/
+    public function bindCustomers(array $apiResponse) : void;
 }

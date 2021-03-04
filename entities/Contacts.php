@@ -3,18 +3,22 @@
 
 namespace entities;
 
-/*
+/**
  * Класс контактов
- *
  * */
 class Contacts extends Entity
 {
-    /*
+    /**
      * Значения мультисписка
      * */
     private array $multiselectId = [
         268519,268521,268523,268525,268527,268529,268531,268533,268535,268537
     ];
+
+    /**
+     * Метод заполнения полей случайными значениями
+     * @return void
+     * */
     public function seed(): void
     {
         $this->data = [
@@ -28,10 +32,11 @@ class Contacts extends Entity
         $this->multiselect();
     }
 
-    /*
+    /**
      * метод для заполнения поля "мультисписок"
+     * @return void
      * */
-    private function multiselect()
+    private function multiselect() : void
     {
         $multiValues = [];
         for ($i=0; $i<=9; ++$i){

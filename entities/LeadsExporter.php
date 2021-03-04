@@ -8,37 +8,37 @@ use core\ApiConnection;
 use core\FileCreatorInterface;
 
 
-/*
+/**
  * Класс, реализующий экспорт сущностей сделок
  * */
 class LeadsExporter implements ExporterInterface
 {
-    /*
+    /**
      * Вспомогательный массив с Id и именами кастомных полей
      * */
     private static array $fields;
 
-    /*
+    /**
      * Массив с промежуточными данными
      * */
     private array $data;
 
-    /*
+    /**
      * Объект, генерирующий файл
      * */
     private FileCreatorInterface $creator;
 
-    /*
+    /**
      * Объект для подключения к АПИ
      * */
     private ApiConnection $api;
 
-    /*
+    /**
      * Массив id сделок для запроса
      * */
     private array $leadsId;
 
-    /*
+    /**
      * Основной массив данных для генерации файла
      * */
     private array $columns = [
@@ -46,6 +46,11 @@ class LeadsExporter implements ExporterInterface
     ];
     const RESPONSABLE = 'Даниил';
 
+    /**
+     * Конструктор класса.
+     * @param array $data
+     * @param FileCreatorInterface $creator
+     * */
     public function __construct(array $data, FileCreatorInterface $creator)
     {
         $this->leadsId = array_map('intval', $data['id']);
@@ -53,19 +58,21 @@ class LeadsExporter implements ExporterInterface
         $this->api = ApiConnection::getInstance();
     }
 
-    /*
+    /**
      * Метод возвращает отформатироанные данные для создания файла
+     * @return array
      * */
     public function getAllData(): array
     {
         return $this->columns;
     }
 
-    /*
+    /**
      * Основной метод класса.
      * Делегирование создания файла объекту CsvCreator
+     * @return void
      * */
-    public function export()
+    public function export() : void
     {
         $leads = $this->api->get('leads', $this->formUri());
         $leads = json_decode($leads, true)['_embedded']['leads'];
@@ -74,8 +81,9 @@ class LeadsExporter implements ExporterInterface
         $this->creator->create($this);
     }
 
-    /*
+    /**
      * Метод, формирующий строку запроса для API
+     * @return string
      * */
     private function formUri(): string
     {
@@ -87,10 +95,12 @@ class LeadsExporter implements ExporterInterface
         return $uri . 'with=companies,contacts';
     }
 
-    /*
+    /**
      * Метод, "упаковывающий" данные в нужном формате
+     * @param array $leads
+     * @return void
      * */
-    private function extract(array $leads)
+    private function extract(array $leads) : void
     {
         for ($i = 0; $i < count($leads); ++$i) {
 
@@ -124,12 +134,9 @@ class LeadsExporter implements ExporterInterface
 
                     $this->data[$i][$x] = $field['value'];
 
-
                 }
 
             }
-
-            //$this->data = array_map('array_values', $this->data);
 
         }
 
@@ -153,29 +160,36 @@ class LeadsExporter implements ExporterInterface
         $this->columns = array_merge($this->columns, $this->data);
     }
 
-    /*
+    /**
      * Метод возвращает имя сущности по указанному ID
+     * @param array $contacts
+     * @param string $type
+     * @return string
      * */
-    private function getName(array $contacts, string $type): string
+    private function getName(array $contacts, string $type) : string
     {
         $id = $contacts[$type][0]['id'];
         $entity = $this->api->get($type, 'api/v4/' . $type . '/' . $id);
         return json_decode($entity, true)['name'];
     }
 
-    /*
+    /**
      * Метод возвращает имя кастомного поля по ID
+     * @param int $id
+     * @return string
      * */
-    private function getCustomFieldName(int $id)
+    private function getCustomFieldName(int $id) : string
     {
         $field = json_decode($this->api->get('leads', 'api/v4/leads/custom_fields/' . $id), true);
         return $field['name'];
     }
 
-    /*
+    /**
      * Метод для форматирования тегов сущности
+     * @param array $tags
+     * @return string
      * */
-    private function extractTags($tags): string
+    private function extractTags(array $tags) : string
     {
         if (count($tags) < 1) {
             return '';
@@ -189,11 +203,13 @@ class LeadsExporter implements ExporterInterface
         return $result;
     }
 
-    /*
+    /**
      * Вспомогательный метод, для форматирования
      * кастомных полей сущности
+     * @param array $customFields
+     * @return array
      * */
-    private function extractCustomFields(array $customFields): array
+    private function extractCustomFields(array $customFields) : array
     {
         $fields = [];
 
@@ -217,8 +233,10 @@ class LeadsExporter implements ExporterInterface
         return $fields;
     }
 
-    /*
+    /**
      * Вспомогательный метод для форматирования доп поля мультисписок
+     * @param array $multi
+     * @return string
      * */
     private function extractMultiSelect(array $multi) : string
     {
@@ -230,8 +248,4 @@ class LeadsExporter implements ExporterInterface
         return implode(',', $res);
     }
 
-    private function getCustomValues()
-    {
-
-    }
 }

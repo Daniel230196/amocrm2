@@ -7,16 +7,17 @@ namespace controllers;
 use core\CsvCreator;
 use entities\LeadsExporter;
 
-/*
+/**
  * Контроллер запросов из виджета
  * */
 class WidgetController extends Controller
 {
 
-    /*
+    /**
      * Метод экспорта сделок в формат CSV
+     * @return void
      * */
-    public function export()
+    public function export() : void
     {
         header('Access-Control-Allow-Origin: https://dann70s.amocrm.ru');
         $data = $this->request->getData();
@@ -25,10 +26,11 @@ class WidgetController extends Controller
 
     }
 
-    /*
-     *
+    /**
+     * Метод, отдающий csv файл с сервера
+     * @return void
      * */
-    public function download()
+    public function download() : void
     {
 
         if (!preg_match('/dann70s\.amocrm\.ru/', $_SERVER['HTTP_REFERER']) != false) {
@@ -41,7 +43,6 @@ class WidgetController extends Controller
         header('Content-type: text/csv');
         header('Content-Disposition: attachment; filename=leads.csv');
         header("Accept-Ranges: bytes");
-        //header("Content-Length: " . filesize($file));
 
         echo $file;
     }

@@ -6,8 +6,14 @@ namespace core;
 
 use entities\ExporterInterface;
 
-
+/**
+ * Интерфейс для генерации файлов
+ **/
 interface FileCreatorInterface
 {
-    public function create(ExporterInterface $exporter);
+    /**
+     * Основной метод создания файла
+     * @param ExporterInterface $exporter
+     * */
+    public function create(ExporterInterface $exporter) : void;
 }

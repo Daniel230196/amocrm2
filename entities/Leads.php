@@ -3,19 +3,26 @@
 
 namespace entities;
 
-/*
+/**
  * Класс сделок
  * */
 class Leads extends Entity
 {
+
+
+    /**
+     * Конструктор класса
+     * производит заполнение полей значениями
+     * */
     public function __construct()
     {
         parent::__construct();
         $this->seed();
     }
 
-    /*
+    /**
      * Заполнение полей сущности значениями
+     * @return void
      * */
     public function seed() : void
     {

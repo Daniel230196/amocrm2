@@ -3,16 +3,24 @@
 
 namespace core;
 
-/*
- * Трейт - синглтон со встроенной в метод получения инициализацией
- *
+/**
+ * Трейт - синглтон со встроенной инициализацией в методе получения
  * */
 trait SingletonTrait
 {
+    /**
+     * Инстанс создаваемой сущности
+     * */
     private static $instance;
 
+    /**
+     * Метод, организующий инициализацию создаваемой сущности
+     * */
     abstract public static function init();
 
+    /**
+     * Основной метод трейта. Возвращает сущность в единственном экземпляре
+     * */
     final public static function getInstance()
     {
         static::init();
@@ -22,6 +30,7 @@ trait SingletonTrait
         }
         return static::$instance;
     }
+
     protected function __construct()
     {
     }

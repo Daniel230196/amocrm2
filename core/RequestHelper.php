@@ -9,32 +9,41 @@ use entities\ContactsMaker;
 use entities\CustomerMaker;
 use entities\LeadsMaker;
 
-/*
+/**
  * Класс-посредник для выполнения комплексных запросов к АПИ
- *
  * */
 class RequestHelper implements ApiRequestInterface
 {
-    /*
+    /**
      * Комплексный список всех сущностей
      * */
     private array $boundedList;
 
-    /*
+    /**
      * Список компаний для связи с покупателями
      * */
     private array $companyList;
-    /*
+
+    /**
      * Экземпляр связи с апи
      * */
     private ApiConnection $api;
 
-    /*
+    /**
      * Экземпляр CustomerBinderInterface
      * */
     private CustomerBinderInterface $binder;
 
-
+    /**
+     * Конструктор класса.
+     * Генерация списка всех сущностей в соответсвии с запрашиваемым количеством
+     * @param LeadsMaker $leadsMaker
+     * @param CompaniesMaker $companiesMaker
+     * @param ContactsMaker $contactsMaker
+     * @param CustomerMaker $customerMaker
+     * @param CustomerBinderInterface $binder
+     * @param int $count
+     * */
     public function __construct(
         LeadsMaker $leadsMaker,
         CompaniesMaker $companiesMaker,
@@ -54,21 +63,12 @@ class RequestHelper implements ApiRequestInterface
         $this->boundedList = $this->list($leadsData, $companiesData, $contactsData, $customersData);
     }
 
-    /*private function makeLists(int $count)
-    {
-        $leadsData = $this->leadsMaker->makeList($count);
-        $companiesData = $this->companiesMaker->makeList($count);
-        $contacts$this->contactsMaker->makeList($count);
-        $this->customerMaker->makeList($count);
 
-
-
-    }*/
-
-    /*
+    /**
      * Основной метод класса. Производит цепочку запросов к АПИ
+     * @return void
      * */
-    public function addComplex()
+    public function addComplex() : void
     {
         $leads = $this->getLeads();
         $customers = $this->getCustomers();
@@ -96,37 +96,50 @@ class RequestHelper implements ApiRequestInterface
 
     }
 
-    /*
+    /**
      * Метод для получения списка всех покупателей
+     * @return array
      * */
-    public function getCustomers(): array
+    public function getCustomers() : array
     {
         return $this->boundedList['customers'];
     }
 
-    /*
+    /**
      * Метод для получения комплексного списка сделок
+     * @return array
      * */
-    public function getLeads()
+    public function getLeads() : array
     {
         return $this->boundedList['leads'];
     }
 
-    /*
+    /**
      * Метод для добавления покупателей
+     * @param array $response
+     * @return void
      * */
-    public function bindCustomers(array $response)
+    public function bindCustomers(array $response) : void
     {
         $this->binder->bindCustomers($response);
     }
 
+    /**
+     * Метод, возвращаюший полный список сущностей
+     * @return array
+     **/
     public function getBoundedList(): array
     {
         return $this->boundedList;
     }
 
-    /*
+    /**
      * Метод для получения общего комплексного списка сущностей
+     * @param array $leadsData
+     * @param array $companiesData
+     * @param array $contactsData
+     * @param array $customersData
+     * @return array
      * */
     private function list(array $leadsData, array $companiesData, array $contactsData, array $customersData): array
     {
@@ -142,10 +155,11 @@ class RequestHelper implements ApiRequestInterface
         return $result;
     }
 
-    /*
+    /**
      * Метод, который производит 3 основных запроса к АПИ
+     * @return void
      * */
-    private function apiRequests()
+    private function apiRequests() : void
     {
         try{
             $responseLeads = $this->api->addComplex($this);
@@ -162,12 +176,4 @@ class RequestHelper implements ApiRequestInterface
         }
     }
 
-    private function addCompanies()
-    {
-
-    }
-
-    private function addContacts()
-    {
-    }
 }

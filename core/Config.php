@@ -3,25 +3,28 @@
 
 namespace core;
 
-/*
+/**
  * Класс настроек
  * */
 class Config
 {
     use SingletonTrait;
 
-    /*
+    /**
      * Массив с настройками
      * */
     private static array $config;
 
-    /*
+    /**
      * Путь к файлам конфигурации
      * */
     private static string $confPath;
 
-    /*
+    /**
      * Получить массив настроек по типу и ключам
+     * @param string $type
+     * @param array $names
+     * @return array
      * */
     public function get(string $type, array $names) : array
     {
@@ -29,10 +32,13 @@ class Config
         return array_intersect_key(self::$config[$type], $names);
     }
 
-    /*
+    /**
      * Переписать конфигурацию новыми значениями
+     * @param string $type
+     * @param array $newConfigElements
+     * @return void
      * */
-    public function set(string $type, array $newConfigElements)
+    public function set(string $type, array $newConfigElements) : void
     {
         if(array_key_exists($type,static::$config )){
            foreach(static::$config[$type] as $key=>&$value){
@@ -42,8 +48,9 @@ class Config
         file_put_contents(self::$confPath.$type.'.json', json_encode(static::$config[$type], JSON_PRETTY_PRINT));
     }
 
-    /*
+    /**
      * Инициализация конфигураций
+     * @return array
      * */
     public static function init() : array
     {

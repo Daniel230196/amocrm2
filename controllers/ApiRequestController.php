@@ -17,26 +17,31 @@ use entities\CommonNote;
 use entities\IncallNote;
 
 
-/*
+/**
  * Контроллер запросов к АПИ
  * */
 class ApiRequestController extends Controller
 {
-    /*
+    /**
      * Посредник для организации запросов
      * */
     protected RequestHelper $helper;
 
+    /**
+     * Конструктор класса
+     * @param Request $request
+     * */
     public function __construct(Request $request)
     {
         $this->view = 'main';
         parent::__construct($request);
     }
 
-    /*
+    /**
      * Метод добавляет и связывает сущности
+     * @return void
      * */
-    public function create()
+    public function create() : void
     {
         $countOfEntities = $this->request->getData()['count'];
 
@@ -57,10 +62,11 @@ class ApiRequestController extends Controller
 
     }
 
-    /*
+    /**
      * Метод добавляет примечание
+     * @return void
      * */
-    public function note()
+    public function note() : void
     {
         $data = $this->request->getData();
 
@@ -69,43 +75,43 @@ class ApiRequestController extends Controller
         } else {
             $note = new IncallNote($data);
         }
-        $res = $note->addNote();
-        var_dump($res);
+        $note->addNote();
+
     }
 
-    /*
+    /**
      * Метод добавляет доп поле текст
+     * @return void
      * */
-    public function text()
+    public function text() : void
     {
         $data = $this->request->getData();
         $textField = new TextField($data);
-        $result = $textField->patch();
-        var_dump($result);
+        $textField->patch();
 
     }
 
-    /*
+    /**
      * Метод добавляет новую задачу
+     * @return void
      * */
-    public function task()
+    public function task() : void
     {
         $data = $this->request->getData();
-        var_dump($data);
         $task = new Task($data);
-        $res = $task->add();
-        var_dump($res);
+        $task->add();
     }
 
-    /*
+    /**
      * Метод, завершающий задачу
+     * @return void
      * */
-    public function taskComplete()
+    public function taskComplete() : void
     {
         $data = $this->request->getData();
         $task = new Task($data);
-        $res = $task->patch();
-        var_dump($res);
+        $task->patch();
+
     }
 
 }

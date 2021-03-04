@@ -3,40 +3,36 @@
 
 namespace core;
 
-/*
+/**
  * Класс для привязки покупателей к компаниям
  * */
 class CustomerBinder implements CustomerBinderInterface
 {
-    /*
+    /**
      * Экземпляр для соединеня с Api
      * */
     private ApiConnection $api;
 
-    /*
-     * ID Компаний
-     * */
-    private array $companiesId;
-
-    /*
-     * ID Покупателей
-     * */
-    private array $customersId;
-
-     /*
+     /**
      * Данные запроса
      * */
     private array $requestData;
 
+    /**
+     * Конструктор класса.
+     * Инициализируется сущность для связи с API
+     * */
     public function __construct()
     {
         $this->api = ApiConnection::getInstance();
     }
 
-    /*
+    /**
      * Основной метод
+     * @param array $apiResponse
+     * @return void
      * */
-    public function bindCustomers(array $apiResponse)
+    public function bindCustomers(array $apiResponse) : void
     {
         $companiesId = $this->companiesId($apiResponse);
         $customersId = $this->customersId($apiResponse);
@@ -53,16 +49,19 @@ class CustomerBinder implements CustomerBinderInterface
 
     }
 
-    /*
+    /**
      * Метод возвращает данные для запроса
+     * @return array
      * */
     public function getRequestData() : array
     {
         return $this->requestData;
     }
 
-    /*
+    /**
      * Метод возвращает массив ID покупателей
+     * @param array $response
+     * @return array
      * */
     private function customersId(array $response) : array
     {
@@ -73,8 +72,10 @@ class CustomerBinder implements CustomerBinderInterface
         return $Id;
     }
 
-    /*
+    /**
      * Метод возвращает массив ID компаний
+     * @param array $response
+     * @return array
      * */
     private function companiesId(array $response) : array
     {

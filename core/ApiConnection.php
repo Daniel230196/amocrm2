@@ -7,21 +7,32 @@ use entities\FIllableInterface;
 use entities\Task;
 
 
-/*
+/**
  * Класс, выполняющий запросы к API
  * */
 class ApiConnection
 {
     use SingletonTrait;
-
+    /**
+     * Данные необходимые для запроса
+     *
+     * */
     private static string $clientId;
     private static string $clientSecret;
     private static string $redirectUri;
     private static string $accessToken;
     private static string $refreshToken;
-    private static string $subdomain;
-    private string $header = 'Authorization: Bearer ';
+    const DOMAIN = 'https://dann70s.amocrm.ru/';
+    const HEADER = 'Authorization: Bearer ';
+
+    /**
+     * Инстанс утилиты curl для запросов к апи
+     * */
     private $curl;
+
+    /**
+     * Счетчик неудачных запросов
+     * */
     private static int $count = 1;
 
     private function __construct()
@@ -38,24 +49,25 @@ class ApiConnection
         return $this->curlRequest($method, $uri);
     }
 
-    /*
+    /**
      * Метод, инициализирующий необходимые для соединения данные
+     * @return void
      * */
-    private static function init()
+    private static function init() : void
     {
         $conf = Config::getInstance()->get('api', ['access_token','refresh_token','redirect_uri','client_id','client_secret', 'domain']);
         self::$refreshToken = $conf['refresh_token'];
         self::$accessToken = $conf['access_token'];
         self::$redirectUri = $conf['redirect_uri'];
-        self::$subdomain = $conf['domain'];
         self::$clientSecret = $conf['client_secret'];
         self::$clientId = $conf['client_id'];
     }
 
-    /*
+    /**
      * Метод для автоматического обновления access_token
+     * @return array
      * */
-    private function refreshToken()
+    private function refreshToken() : array
     {
         $params = [
             "client_id" => self::$clientId,
@@ -65,7 +77,7 @@ class ApiConnection
             "redirect_uri" => self::$redirectUri
         ];
 
-        $link = self::$subdomain.'oauth2/access_token';
+        $link = self::DOMAIN.'oauth2/access_token';
 
         $curl = curl_init();
         curl_setopt($curl,CURLOPT_RETURNTRANSFER, true);
@@ -90,13 +102,17 @@ class ApiConnection
 
     }
 
-    /*
+    /**
      * Метод, производящий curl-запросы
+     * @param string $method
+     * @param string $uri
+     * @param mixed $data
+     * @return mixed
      *
      * */
     private function curlRequest(string $method, string $uri, array $data = null)
     {
-        $link = self::$subdomain . $uri;
+        $link = self::DOMAIN . $uri;
         $headers = $this->getHeaders();
 
         $this->curl = curl_init();
@@ -113,7 +129,6 @@ class ApiConnection
         if(!is_null($data)){
             $data = json_encode($data);
             curl_setopt($this->curl, CURLOPT_POSTFIELDS, $data);
-            var_dump($data);
         }
 
         $response = curl_exec($this->curl);
@@ -123,8 +138,10 @@ class ApiConnection
         $check = json_decode($response,true);
 
         if(isset($check['status']) && $check['status'] === 401){
+            // в случае статуса ошибки 401 произвести попытку обновить токен, увеличить счетчик на единицу
             $this->refreshToken();
             ++static::$count;
+            // в зависимости от счетчика, поавторить запрос , либо вернуть false
             return static::$count > 1 ? false : $this->curlRequest($method, $uri, json_decode($data,true));
         }else{
             return $response;
@@ -132,8 +149,10 @@ class ApiConnection
 
     }
 
-    /*
+    /**
      * Пакетное добавление сделок с привязанными контактами и компаниями
+     * @param ApiRequestInterface $apiHelper
+     * @return mixed
      * */
     public function addComplex(ApiRequestInterface $apiHelper)
     {
@@ -146,8 +165,10 @@ class ApiConnection
 
     }
 
-    /*
+    /**
      * метод для добавления покупателей
+     * @param ApiRequestInterface $apiHelper
+     * @return mixed
      * */
     public function addCustomers(ApiRequestInterface $apiHelper)
     {
@@ -158,8 +179,10 @@ class ApiConnection
         return $this->curlRequest($method,$uri, $data);
     }
 
-    /*
+    /**
      * Метод для связывания сущностей
+     * @param CustomerBinderInterface $binder
+     * @return mixed
      * */
     public function bind(CustomerBinderInterface $binder)
     {
@@ -170,9 +193,10 @@ class ApiConnection
         return $this->curlRequest($method,$uri,$data);
     }
 
-    /*
+    /**
      * Метод заполняет редактирует сущность
-     *
+     * @param FIllableInterface $model
+     * @return mixed
      * */
     public function patch(FIllableInterface $model)
     {
@@ -183,8 +207,10 @@ class ApiConnection
         return $this->curlRequest($method,$uri,$data);
     }
 
-    /*
+    /**
      * Метод добавляет примечание
+     * @param BaseNote $note
+     * @return mixed
      * */
     public function addNote(BaseNote $note)
     {
@@ -197,8 +223,10 @@ class ApiConnection
 
     }
 
-    /*
+    /**
      * Метод добавляет задачу
+     * @param Task $task
+     * @return mixed
      * */
     public function addTask(Task $task)
     {
@@ -209,12 +237,13 @@ class ApiConnection
         return $this->curlRequest($method,$uri,$data);
     }
 
-    /*
+    /**
      * метод получения необходимых для запроса заголовков
+     * @return array
      * */
     private function getHeaders() : array
     {
-        $headers[] = $this->header.self::$accessToken;
+        $headers[] = self::HEADER.self::$accessToken;
         $headers[] = 'Content-Type: application/json';
         return $headers;
     }
